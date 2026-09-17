@@ -1,0 +1,93 @@
+:root {font-family: "Segoe UI", Arial, sans-serif; color:#203345; background:#f5f7f8; line-height:1.5; --border:#dbe2e6; --teal:#17675d}
+* {box-sizing:border-box}
+body {margin:0}
+button, input {font:inherit}
+button {border:1px solid #c9d3d9; border-radius:6px; background:white; color:#243b4c; padding:9px 12px; cursor:pointer}
+button:hover {border-color:var(--teal); background:#edf5f3}
+button:disabled {opacity:.45; cursor:default}
+:focus-visible {outline:3px solid #167f88; outline-offset:3px}
+.masthead {display:flex; gap:15px; align-items:center; padding:24px 4vw; border-bottom:1px solid var(--border); background:white}
+.brand-mark {background:#164b46; color:white; font-size:32px; min-width:52px; height:52px; border-radius:12px; text-align:center}
+h1 {font-size:24px; letter-spacing:-.8px; margin:0}
+.version {font-size:9px; letter-spacing:1px; vertical-align:middle; display:inline-block; margin-left:16px; padding:4px 7px; border:1px solid var(--border); border-radius:4px; color:#526675}
+p {margin:8px 0}
+.masthead p {font-size:13px; color:#667782; margin:0}
+.privacy {margin-left:auto; font-size:12px; color:#376d5f}
+main {max-width:1500px; margin:auto; padding:0 4vw}
+.intro {display:flex; justify-content:space-between; gap:40px; align-items:center; padding:42px 0}
+.eyebrow {font-size:10px; letter-spacing:1.8px; font-weight:700; color:var(--teal); margin:0 0 9px}
+.intro h2 {font-size:38px; line-height:1.13; letter-spacing:-1.2px; font-weight:600; margin:0 0 16px}
+.intro p:not(.eyebrow) {font-size:14px; color:#5d707d; max-width:460px}
+.import-box {min-width:330px; padding:23px 30px; border:1px dashed #bccfc9; background:#edf4f1; border-radius:10px}
+.primary {background:var(--teal); color:white; border-color:var(--teal); font-size:14px; font-weight:600}
+.primary:hover {background:#114e46; color:white}
+.import-box p {font-size:12px!important; line-height:1.8}
+.text-button {border:0; background:transparent; padding:0; color:var(--teal); font-size:13px}
+.workspace-grid {display:grid; grid-template-columns:260px minmax(0,1fr); gap:20px}
+.panel {background:white; border:1px solid var(--border); border-radius:10px; padding:22px; box-shadow:0 2px 3px #20334503; min-width:0}
+.panel h2 {font-size:19px; margin:0; font-weight:600}
+.section-heading {display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px}
+.section-heading>span {font-size:12px; color:#677a88}
+.section-heading .eyebrow {font-size:9px; margin-bottom:4px}
+.export-buttons {display:flex; gap:7px; flex-wrap:wrap}
+.export-buttons button {font-size:12px}
+.context {padding:12px 14px; border-radius:5px; background:#fff7e7; color:#735e30; font-size:13px; margin-bottom:20px; overflow-wrap:anywhere}
+.hint {font-size:12px; color:#5c6e7b; line-height:1.6}
+.files .hint {margin:14px 0}
+.analysis-list label {display:block; padding:12px; border:1px solid var(--border); border-radius:6px; margin:10px 0; font-size:12px; overflow-wrap:anywhere; cursor:pointer}
+.analysis-list label:has(input:checked) {border-color:#54988c; background:#f0f7f4}
+.analysis-list input {margin-right:7px; accent-color:var(--teal)}
+.remove-button {margin-top:18px; font-size:12px}
+.controls {display:flex; gap:18px; flex-wrap:wrap; font-size:12px; align-items:end}
+.controls label {display:flex; flex-direction:column; gap:6px}
+.controls .dash-dropdown {min-width:100px}
+.controls input {width:102px; height:36px; padding:6px 10px; border:1px solid #cbd3d8; border-radius:4px; background:white; color:#203345}
+.navigation {display:flex; justify-content:space-between; align-items:center; margin:22px 0 0; font-size:12px; color:#617585}
+.navigation button {font-size:12px; padding:5px 10px}
+.legend {border-top:1px solid var(--border); padding-top:15px; display:flex; flex-wrap:wrap; gap:10px 18px; font-size:12px; color:#536776}
+.legend>span {display:flex; align-items:center; gap:6px}
+.swatch {border:1px solid #7b8c9c; width:18px; height:18px; font-size:12px; line-height:16px; text-align:center; flex-shrink:0}
+.inspector {margin-top:22px}
+.inspection {display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:24px}
+.evidence-card {min-width:0; padding:4px 10px 6px 0}
+.evidence-card h3 {margin:0 0 8px; font-size:16px}
+.state-label {font-size:13px; font-weight:700; color:#394e63}
+.state-label.purifying {color:#2868a5}
+.state-label.pervasive, .state-label.episodic {color:#a24a16}
+.state-label.difference {color:#76549b}
+dl {display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; font-size:12px; margin:18px 0}
+dt {color:#5e7180}
+dd {margin:0; text-align:right; overflow-wrap:anywhere; font-variant-numeric:tabular-nums}
+details {border-top:1px solid #e4e9ed; font-size:12px; padding:9px 0}
+summary {cursor:pointer; color:#345767}
+pre {white-space:pre-wrap; overflow-wrap:anywhere; max-height:280px; overflow:auto; background:#f4f6f8; padding:12px; font-size:11px}
+.warning {color:#9a3d26; font-size:12px}
+#message:not(:empty) {padding:12px 16px; background:#edf6f2; border:1px solid #b8d7cb; border-radius:6px; margin-bottom:18px; font-size:13px; white-space:pre-wrap; overflow-wrap:anywhere}
+.reading {padding:32px 0}
+.reading h2 {font-size:18px; font-weight:600}
+.reading-grid {display:grid; grid-template-columns:repeat(3,1fr); gap:30px; font-size:13px; color:#596c78}
+.reading strong {color:#2c4659}
+.footnote {font-size:12px; color:#687b86; border-top:1px solid var(--border); padding-top:17px; margin-top:19px}
+footer {padding:22px 4vw; background:white; border-top:1px solid var(--border); font-size:12px; color:#657983}
+@media(max-width:950px) {
+  .workspace-grid {grid-template-columns:minmax(0,1fr)}
+  .intro {gap:20px}
+  .intro h2 {font-size:31px}
+  .import-box {min-width:280px; padding:20px}
+  .privacy {display:none}
+}
+@media(max-width:580px) {
+  main {padding:0 16px}
+  .masthead {padding:18px 16px}
+  h1 {font-size:20px}
+  .version {display:block; margin:4px 0; font-size:8px}
+  .intro {display:block; padding:25px 0}
+  .intro h2 {font-size:29px}
+  .import-box {margin-top:20px; min-width:0}
+  .panel {padding:16px}
+  .section-heading {align-items:flex-start; flex-wrap:wrap}
+  .reading-grid {grid-template-columns:1fr; gap:5px}
+  .inspection {grid-template-columns:1fr}
+  .evidence-card {padding:0}
+  .controls {gap:12px}
+}

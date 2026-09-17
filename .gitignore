@@ -2,3 +2,5 @@ node_modules/
 __pycache__/
 .artifacts/
 *.log
+.venv/
+.pytest_cache/
