@@ -44,11 +44,19 @@ def main():
         ws = None
         try:
             port_file = Path(profile) / "DevToolsActivePort"
+            port = None
             for _ in range(200):
-                if port_file.exists():
-                    break
+                try:
+                    # Windows can observe the file before Chrome releases its write lock.
+                    lines = port_file.read_text().splitlines()
+                    if len(lines) >= 2 and lines[0].isdigit():
+                        port = lines[0]
+                        break
+                except OSError:
+                    pass
                 time.sleep(.05)
-            port = port_file.read_text().splitlines()[0]
+            if port is None:
+                raise RuntimeError("Chrome did not publish a readable debugging port within 10 seconds.")
             pages = json.load(urllib.request.urlopen(f"http://127.0.0.1:{port}/json"))
             ws = websocket.create_connection(next(p["webSocketDebuggerUrl"] for p in pages if p["type"] == "page"), suppress_origin=True, timeout=30)
             seq, errors, requests = 0, [], []
@@ -131,8 +139,13 @@ def main():
             assert evaluate("document.querySelector('.explorer').getBoundingClientRect().bottom <= document.querySelector('.inspector').getBoundingClientRect().top"), "Track panel overlaps inspector"
             assert evaluate("document.querySelector('#tracks .main-svg').getBoundingClientRect().bottom <= document.querySelector('.legend').getBoundingClientRect().top + 1"), "Chart overflows its container"
             (artifacts / "desktop.png").write_bytes(base64.b64decode(call("Page.captureScreenshot", dict(format="png", captureBeyondViewport=True))["data"]))
+            def select_analysis(filename):
+                evaluate("Array.from(document.querySelectorAll('#active label')).find(el => el.textContent.includes(" + json.dumps(filename) + ")).querySelector('input').click()")
+                until("document.getElementById('context').textContent.includes(" + json.dumps(filename) + ") && document.querySelector('#tracks .js-plotly-plot').data.length === 1")
+
             files([ROOT / "fixtures/CD2.FEL.json", ROOT / "fixtures/CD2.MEME.json"])
-            until("document.getElementById('context').textContent.includes('CD2.MEME.json') && document.querySelector('#tracks .js-plotly-plot').data.length === 1")
+            until("document.querySelectorAll('#active input').length === 3")
+            select_analysis("CD2.MEME.json")
             assert evaluate("document.getElementById('message').textContent.includes('Imported 2')")
             click_bar(42)
             until("document.getElementById('inspector-title').textContent === 'Codon 43'")
@@ -153,24 +166,39 @@ def main():
             until("document.getElementById('range').textContent.includes('73–144')")
             evaluate("document.getElementById('previous').click()")
             until("document.getElementById('range').textContent.includes('1–72')")
-            evaluate("document.querySelectorAll('#active input')[1].click()")
-            until("document.getElementById('context').textContent.includes('CD2.FEL.json')")
+            select_analysis("CD2.FEL.json")
             number("#codon", 31)
             until("document.getElementById('inspector-title').textContent === 'Codon 31'")
             assert evaluate("document.getElementById('inspection').textContent.includes('purifying')")
-            evaluate("document.querySelectorAll('#active input')[2].click()")
-            until("document.getElementById('context').textContent.includes('CD2.MEME.json')")
+            select_analysis("CD2.MEME.json")
             files([ROOT / "fixtures/partitioned.FEL.json"])
             until("document.getElementById('message').textContent.includes('Recombination')")
             assert evaluate("document.getElementById('context').textContent.includes('CD2.MEME.json')")
+            files([ROOT / "fixtures/lysin.MEME.json"])
+            until("document.getElementById('context').textContent.includes('lysin.MEME.json')")
+            click_bar(5)
+            until("document.getElementById('inspector-title').textContent === 'Codon 6'")
+            assert evaluate("document.getElementById('inspection').textContent.includes('23.81442994266141')")
             # Load a temporary fixture through the real upload control; rendered as text.
+            # Datamonkey contract: official native CD2 output plus supplied PMID.
             raw = json.loads((ROOT / "fixtures/CD2.FEL.json").read_text())
             raw["input"]["file name"] = '<img src=x onerror="window.metadataExecuted=true">'
-            malicious = artifacts / "metadata-test.json"
+            raw["PMID"] = "22807683"
+            upload_dir = artifacts / "upload-fixtures"
+            upload_dir.mkdir()
+            malicious = upload_dir / "datamonkey-results.json"
             malicious.write_text(json.dumps(raw), encoding="utf8")
             files([malicious])
-            until("document.getElementById('context').textContent.includes('metadata-test.json')")
+            until("document.getElementById('context').textContent.includes('datamonkey-results.json')")
             assert evaluate("!window.metadataExecuted && document.querySelectorAll('#inspection img').length===0")
+            assert evaluate("document.getElementById('inspection').textContent.includes('22807683')")
+            evaluate("document.getElementById('original').click()")
+            assert download("datamonkey-results.json").read_bytes() == malicious.read_bytes()
+            evaluate("document.getElementById('csv').click()")
+            assert '22807683' in download("shift-happens-evidence.csv").read_text(encoding="utf8")
+            evaluate("document.getElementById('svg').click()")
+            metadata = ET.parse(download("shift-happens-evidence.svg")).find(".//{http://www.w3.org/2000/svg}metadata")
+            assert json.loads(metadata.text)["sources"][0]["publication_metadata"] == "22807683"
             evaluate("document.getElementById('remove').click()")
             until("document.getElementById('context').textContent.includes('SYNTHETIC')")
             # Every browser request, including Plotly and callbacks, must stay local.
@@ -184,7 +212,7 @@ def main():
             call("Page.reload")
             until("document.querySelector('#tracks .js-plotly-plot')?.data?.length === 3")
             assert evaluate("!document.getElementById('active').textContent.includes('CD2')")
-            print("PASS: Dash renders; real Plotly clicks synchronize evidence; multi-file uploads, native isolation, pagination, invalid-file recovery, removal, CSV/SVG/original downloads, metadata safety, memory-only workspace and mobile layout work. All observed browser requests stayed local.")
+            print("PASS: Dash renders; real Plotly clicks synchronize evidence; multi-file uploads including Datamonkey-contract JSON and official MEME 2.00, native isolation, pagination, invalid-file recovery, removal, CSV/SVG/original downloads, publication metadata, memory-only workspace and mobile layout work. All observed browser requests stayed local.")
             print("Artifacts:", artifacts)
         finally:
             if ws:

@@ -1,5 +1,11 @@
 # Validation record
 
+## Datamonkey import increment
+
+- **79 Python tests passed**, including pinned MEME 2.00 fixture values and coordinates, reordered headers, Datamonkey publication metadata preservation, wrong-download diagnostics, unsupported versions, and independent native analyses.
+- **Hosted-mode Chrome smoke passed** with actual uploads of official MEME 2.00 output and a documented Datamonkey-contract transformation, codon inspection, safe metadata rendering, and CSV/SVG/original JSON downloads. Existing navigation, isolation, recovery, memory reset, and mobile layout checks also passed.
+- Datamonkey contract transformations follow the pinned official server source; they are not live job downloads. No Datamonkey job or Render deployment was performed. See [provenance and supported versions](datamonkey.md).
+
 ## Python/Dash and Render preparation
 
 - **64 Python tests passed** on Python 3.11.9 / Dash 3.4.0 / Plotly 6.9.0: fixture integrity, known estimates, malformed fields and missing values, scientific interpretation, isolated workspaces, exports, hosted limits, privacy wording, health/WSGI routes, transport limits, and Blueprint/Gunicorn configuration contracts.

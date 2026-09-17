@@ -44,6 +44,10 @@ class Analysis:
     identity: str | None = None
 
     @property
+    def input_format(self):
+        return "Built-in synthetic illustration" if self.synthetic else "Native HyPhy / Datamonkey results JSON"
+
+    @property
     def scope(self):
         return {
             "FEL": "Pervasive site evidence over tested branches",

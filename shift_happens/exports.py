@@ -19,14 +19,14 @@ def evidence_csv(analyses, threshold):
     writer = csv.writer(output, quoting=csv.QUOTE_ALL)
     writer.writerow(["source", "method", "method_version", "synthetic", "codon_1based", "partition", "source_row_0based", "state",
                      "alpha", "beta", "beta_minus", "beta_plus", "weight_plus", "group_A_rate_demo", "group_B_rate_demo", "LRT", "p_value",
-                     "threshold", "correction", "scope", "tested_branches", "issues", "native_headers", "native_row"])
+                     "threshold", "correction", "scope", "tested_branches", "issues", "native_headers", "native_row", "input_format", "publication_metadata"])
     for a in analyses:
         for codon in range(1, a.length + 1):
             site = a.sites.get(codon)
             v = site.values if site else {}
             row = [a.filename, a.method, a.version, a.synthetic, codon, site.partition if site else None, site.row if site else None,
                    STATES[classify(a, site, threshold)][0], *[v.get(k) for k in ("alpha", "beta", "betaMinus", "betaPlus", "weightPlus", "groupA", "groupB", "lrt", "p")],
-                   threshold, a.correction, a.scope, a.raw["tested"], site.issues if site else None, a.raw.get("MLE", {}).get("headers"), site.native if site else None]
+                   threshold, a.correction, a.scope, a.raw["tested"], site.issues if site else None, a.raw.get("MLE", {}).get("headers"), site.native if site else None, a.input_format, a.raw.get("PMID")]
             writer.writerow([csv_cell(value) for value in row])
     return output.getvalue()
 
@@ -55,7 +55,7 @@ def figure_svg(analyses, threshold, start, end):
              '<text x="35" y="40" font-size="25" font-weight="bold">Shift Happens</text><text x="35" y="65" font-size="14">See where selection changes.</text>',
              f'<text x="35" y="92" font-size="14">{"SYNTHETIC ILLUSTRATION · " if synthetic else ""}Unadjusted exploratory p ≤ {threshold} · Alignment codons {start}–{end} (1-based)</text>']
     metadata = dict(threshold=threshold, start=start, end=end, sources=[dict(filename=a.filename, method=a.method, version=a.version,
-                    synthetic=a.synthetic, scope=a.scope, correction=a.correction, tested=a.raw["tested"], settings=a.raw.get("settings"), partitions=a.raw["data partitions"]) for a in analyses])
+                    synthetic=a.synthetic, scope=a.scope, correction=a.correction, tested=a.raw["tested"], settings=a.raw.get("settings"), partitions=a.raw["data partitions"], input_format=a.input_format, publication_metadata=a.raw.get("PMID")) for a in analyses])
     parts.append(f'<metadata>{xml(json.dumps(metadata, ensure_ascii=False))}</metadata>')
     for i, a in enumerate(analyses):
         y = 130 + i * 64

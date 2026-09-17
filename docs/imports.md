@@ -16,7 +16,7 @@ The CD2 fixtures are mammalian CD2 examples with ten taxa. They are **not** labe
 
 ## Adapter contract
 
-1. Recognize the method from the `FEL (` or `MEME (` prefix in documented `analysis.info`. Require exact fixture-covered string versions: FEL `2.00`, MEME `2.1.1`.
+1. Recognize the method from the `FEL (` or `MEME (` prefix in documented `analysis.info`. The Python/Dash adapter requires exact fixture-covered string versions: FEL `2.00`, MEME `2.00` or `2.1.1`. The additional official lysin fixture and Datamonkey download contract are documented in [datamonkey.md](datamonkey.md); the preserved JavaScript prototype retains MEME `2.1.1` only.
 2. Require one partition, keyed `0`, consistently in input counts, partition metadata, trees, tested branches, and MLE results. Reject multiple partitions even if a count was changed to one.
 3. Treat `input.number of sites` as the alignment codon count for these formats. Read the ordered, zero-based codon coordinate list from `data partitions.0.coverage[0]`. Each `MLE.content.0` row maps to the corresponding coverage entry. Display `coverage[i] + 1`, retain source row `i` and partition `0`, and reject duplicates, fractional/negative/out-of-range coordinates, malformed matrices, or row-count mismatches. Never divide these codon coordinates by three.
 4. Build a column index from header names, retaining each accompanying description and every original column. Reordering the entire header/row table leaves the normalized values unchanged.

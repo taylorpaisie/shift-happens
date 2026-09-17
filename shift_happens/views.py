@@ -49,7 +49,7 @@ def inspector(analyses, codon, threshold):
         else:
             pairs.extend((label, v.get(key)) for label, key in [("Group A rate (synthetic)", "groupA"), ("Group B rate (synthetic)", "groupB")])
         pairs.extend([("Likelihood ratio statistic", v.get("lrt")), ("Inferred branch length", v.get("branchLength")),
-                      ("Tested scope", a.scope_summary), ("Source", a.filename), ("Method version", a.version),
+                      ("Tested scope", a.scope_summary), ("Source", a.filename), ("Input format", a.input_format), ("Method version", a.version),
                       ("Mapping", f"Partition 0, source row {site.row} → codon {codon}" if site else "Outside this file’s covered sites")])
         definition = [item for name, value in pairs for item in (html.Dt(name), html.Dd("Not available" if value is None else str(value)))]
         cards.append(html.Article([
@@ -59,6 +59,7 @@ def inspector(analyses, codon, threshold):
             html.P("; ".join(site.issues) if site else "Not covered by this analysis.", className="warning"),
             disclosure("Tested branches & input tree", dict(tested=a.raw["tested"], trees=a.raw.get("input", {}).get("trees"))),
             disclosure("Source metadata & analysis settings", {k: a.raw.get(k) for k in ("analysis", "input", "settings", "data partitions")}),
+            disclosure("Publication metadata (as supplied)", a.raw.get("PMID")),
             disclosure("Available model fits & timings", {k: a.raw.get(k) for k in ("fits", "timers")}),
             disclosure("Original site values & column definitions", dict(headers=a.raw.get("MLE", {}).get("headers"), row=site.native if site else None)),
         ], className="evidence-card"))

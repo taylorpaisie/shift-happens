@@ -1,7 +1,7 @@
 """Per-browser state: source text stays in a memory Store, not global server state."""
 from uuid import uuid4
 from .demo import create_demo
-from .imports import decode_upload, parse_hyphy
+from .imports import decode_upload, parse_results
 from .config import Settings
 
 def initial_workspace():
@@ -24,7 +24,7 @@ def import_files(workspace, contents, filenames, settings=None):
             text = decode_upload(content, settings.max_file_bytes)
             if used + len(text.encode("utf-8")) > settings.max_workspace_bytes or len(updated["files"]) >= 20:
                 raise ValueError(f"Workspace limit reached ({settings.max_workspace_mib} MiB / 20 files). Remove an analysis before importing more.")
-            a = parse_hyphy(text, filename, settings.max_file_bytes, settings.max_codons)
+            a = parse_results(text, filename, settings.max_file_bytes, settings.max_codons)
             selected = uuid4().hex
             updated["files"].append({"id": selected, "filename": filename, "text": text, "method": a.method, "version": a.version})
             used += len(text.encode("utf-8"))
@@ -41,5 +41,5 @@ def active_analyses(workspace, selected, settings=None):
         return create_demo()
     for source in workspace["files"]:
         if source["id"] == selected:
-            return [parse_hyphy(source["text"], source["filename"], settings.max_file_bytes, settings.max_codons)]
+            return [parse_results(source["text"], source["filename"], settings.max_file_bytes, settings.max_codons)]
     return []

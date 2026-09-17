@@ -28,7 +28,7 @@ Hosted mode explicitly tells users that uploaded data goes to the hosting server
 | Method | `analysis.version` verified | Scope | Fixture |
 | --- | --- | --- | --- |
 | FEL | `2.00` | Pervasive site selection in the reported test branches | Official mammalian CD2 output, 187 codons |
-| MEME | `2.1.1` | Episodic site diversification in the reported test branches | Official mammalian CD2 output, 187 codons |
+| MEME | `2.00`, `2.1.1` | Episodic site diversification in the reported test branches | Official lysin and mammalian CD2 outputs |
 | Contrast-FEL | **No native import yet** | Synthetic branch-group difference illustration only | No adapter validation completed |
 
 These are **analysis method versions, not HyPhy executable versions**. The fixtures do not report a verified executable version. Newer or different method versions are rejected even if they look similar. Supporting an entire HyPhy release family is not claimed.
@@ -36,6 +36,8 @@ These are **analysis method versions, not HyPhy executable versions**. The fixtu
 Only single-partition outputs with documented `MLE.headers`, `MLE.content`, `data partitions.0.coverage`, input tree, counts, and tested-branch labels are accepted. Local limits are 25 MiB/file, 50 MiB/workspace, 20 files, and 100,000 alignment codons; hosted limits are smaller. Large-file responsiveness and concurrency are not benchmarked. No native FUBAR, aBSREL, RELAX, GARD, or normalized project-JSON importer is included.
 
 See [format provenance and field mapping](docs/imports.md) for pinned official references, header mapping, coordinate conventions, fixture hashes, expected values, and rejection rules.
+
+**Datamonkey:** use the same import button with the full results JSON downloaded from a completed FEL/MEME job. Datamonkey uses the native HyPhy results schema; supplied publication metadata is preserved in inspection and exports. CSV tables, job-status JSON, saved webpages, and live URLs are not full analysis results. Current Datamonkey jobs can use newer method versions than those validated above. See [Datamonkey import instructions and verification](docs/datamonkey.md).
 
 ## Example workflow
 
@@ -45,7 +47,7 @@ See [format provenance and field mapping](docs/imports.md) for pinned official r
 4. Change the explicitly **unadjusted exploratory threshold**. Raw p-values remain unchanged. Inspect original row values, column descriptions, branch scope, partition mapping, input metadata, and available fits.
 5. Export **Evidence CSV** for all alignment codons of the active analysis or synthetic group; export **Figure SVG** for its chosen coordinate window, with legend, settings, and scientific interpretation notes. Source JSON can be downloaded as the original decoded text; the app does not rewrite its fields.
 
-Importing `fixtures/partitioned.FEL.json` demonstrates an actionable rejection of recombination-partitioned data. All fixtures are nonpathogenic mammalian CD2 or explicitly simulated data.
+Importing `fixtures/partitioned.FEL.json` demonstrates an actionable rejection of recombination-partitioned data. All fixtures are nonpathogenic mammalian CD2, abalone lysin, or explicitly simulated data.
 
 ## Scientific boundaries
 
@@ -71,7 +73,7 @@ SVG figures use system fonts and do not embed fonts. Browser state is not persis
 
 ```sh
 python -m pip install -r requirements-dev.txt
-python -m pytest -q tests/test_python.py tests/test_hosting.py
+python -m pytest -q tests/test_python.py tests/test_hosting.py tests/test_datamonkey.py
 python scripts/dash_smoke.py
 ```
 
