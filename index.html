@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore method-specific evidence for evolutionary selection, locally in your browser.">
+  <title>Shift Happens · See where selection changes.</title>
+  <link rel="stylesheet" href="style.css"><script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <header class="masthead"><div class="brand-mark" aria-hidden="true">⇄</div><div><h1>Shift Happens<span class="version">RESEARCH PREVIEW</span></h1><p>See where selection changes.</p></div><span class="privacy">● Files stay in this browser</span></header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">EVOLUTION, IN CONTEXT</p><h2>Different methods.<br> Distinct evidence.</h2><p>Explore conservation and diversification along an alignment.<br> Keep the statistical question in view.</p></div><div class="import-box"><label for="upload" class="button primary">＋ Import HyPhy JSON</label><input class="file-input" type="file" id="upload" accept=".json,application/json" multiple><p>Verified: FEL 2.00 · MEME 2.1.1<br>Single partition · up to 25 MiB per file</p><button id="demo" class="text-button">Open synthetic example →</button></div></section>
+    <div id="message" role="status" aria-live="polite"></div>
+    <div class="workspace">
+      <aside class="panel files"><div class="section-heading"><h2>Analyses</h2><span id="file-count" class="counter"></span></div><p class="hint">Choose an analysis to explore its coordinates. Native files stay independent until alignment identity can be verified.</p><div id="file-list"></div></aside>
+      <section class="panel explorer" aria-label="Selection tracks"><div class="section-heading"><div><p class="eyebrow">ALONG THE ALIGNMENT</p><h2>Selection evidence</h2></div><div class="export-buttons"><button id="csv">Evidence CSV</button><button id="svg">Figure SVG</button></div></div>
+        <div id="context" class="context"></div>
+        <div class="controls"><label>Exploratory p ≤ <select id="threshold"><option value="0.01">0.01</option><option value="0.05" selected>0.05</option><option value="0.1">0.10</option></select></label><span>Unadjusted · no combined score</span><label>Start codon <input type="number" id="start" value="1" min="1" step="1"></label><label>Window <select id="window"><option>36</option><option selected>72</option><option>144</option></select></label></div>
+        <div class="navigation"><button id="previous" aria-label="Previous codon window">← Previous</button><span id="range"></span><button id="next" aria-label="Next codon window">Next →</button></div>
+        <div id="tracks" class="tracks"></div><div id="legend" class="legend" aria-label="Track legend"></div>
+        <p class="hint track-help">Click a codon to inspect evidence. Scroll the tracks horizontally to see the full window. Arrow keys move between codons. Symbols and colors identify evidence states.</p>
+      </section>
+    </div>
+    <section class="panel inspector"><div class="section-heading"><div><p class="eyebrow">THE EVIDENCE BEHIND THE MARK</p><h2 id="inspector-title">Codon 1</h2></div><span>Alignment coordinates · 1-based</span></div><div id="inspection" class="inspection"></div></section>
+    <section class="reading"><h2>Read the evidence, preserve the question.</h2><div><p><strong>FEL</strong> tests pervasive site selection across the tested branches. Purifying and diversifying evidence receive equal visual weight.</p><p><strong>MEME</strong> tests episodic diversification at a site. It does not provide evidence for purifying selection or by itself establish a specific selected branch.</p><p><strong>Contrast-FEL</strong> compares branch groups. A difference does not establish positive selection or pinpoint when a shift occurred. Available here only as a synthetic illustration.</p></div><p class="footnote">Nonsignificance is not proof of neutrality. These are inferred selective pressures, not a measured fitness landscape or a new statistical test. Significant sites and branches from different methods must not be combined to infer selected branch–site intersections.</p></section>
+  </main><footer>Shift Happens · Local-first evolutionary evidence explorer <a href="README.md">Documentation & limitations ↗</a></footer>
+</body>
+</html>

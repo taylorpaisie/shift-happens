@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Shift Happens test suite</title><h1>Browser validation</h1><pre id="results">Running…</pre><script type="module">
+import { runSuite } from './suite.js';
+try {
+  window.testResults = await runSuite(async name => { const r = await fetch('../fixtures/' + name); if (!r.ok) throw new Error('Fixture HTTP ' + r.status); return r.text(); });
+  document.getElementById('results').textContent = window.testResults.map(r => `${r.ok ? 'PASS' : 'FAIL'} ${r.name}${r.error ? ': ' + r.error : ''}`).join('\n');
+} catch(e) { window.testResults = [{ok:false, error:e.message}]; }
+</script></html>
