@@ -2,19 +2,26 @@
 
 **See where selection changes.**
 
-A local browser tool for exploring inferred evolutionary selective pressures. This first working increment imports a deliberately narrow, fixture-validated subset of native HyPhy JSON, keeps method-specific evidence separate, and includes an explicitly synthetic linked-track example. No backend, build step, runtime dependencies, telemetry, or external assets.
+A **Python + Dash** tool for exploring inferred evolutionary selective pressures. It imports a deliberately narrow, fixture-validated subset of native HyPhy JSON, keeps method-specific evidence separate, and includes an explicitly synthetic linked-track example. Plotly renders linked codon tracks; Python handles validation, inspection, and exports. No database, Node build step, or external data service is required.
 
 ## Run locally
 
-From this directory, with Python 3 installed:
+From this directory, with Python 3.11 installed (a virtual environment is recommended):
 
 ```sh
-python -m http.server 8000 --bind 127.0.0.1
+python -m pip install -r requirements.txt
+python app.py
 ```
 
-Open **http://127.0.0.1:8000**. Use a modern Chromium, Firefox, or Safari browser with JavaScript modules enabled. Only Chromium has been smoke-tested in this increment. Serve over localhost; opening `index.html` with `file://` is not supported.
+Open **http://127.0.0.1:8050**. `python app.py --port 8051` selects another port. Assets are located relative to `app.py`, so starting the script from another working directory still serves the app. Only Chromium has been smoke-tested. **Do not use `python -m http.server` for the Dash app**; that serves the earlier static version instead.
 
-Uploaded files are read into browser memory and are never posted to the local server or a remote service. Reloading clears the workspace. Export original JSON before discarding your own source if needed. The local server only serves static files; it does not run analyses.
+In local mode, uploads are sent to the Python server bound to `127.0.0.1` and processed on your computer. A browser-memory `dcc.Store` holds that browser's source files; callbacks are stateless and do not share uploaded datasets through server globals. The app does not write uploads to disk, use a database, or send application telemetry. Reloading clears the workspace. It does not run HyPhy analyses.
+
+## Render hosting
+
+The repo includes [render.yaml](render.yaml), a Gunicorn WSGI entry point, health checks, and hosted-mode limits. Follow [docs/render.md](docs/render.md) for Blueprint and manual setup. This configuration has **not** been deployed.
+
+Hosted mode explicitly tells users that uploaded data goes to the hosting server. The Blueprint uses a Free preview instance with manual deploys, 5 MiB/file, 10 MiB/workspace, and 10,000 codons/analysis. No account system or persistent storage is included. Local mode remains available for datasets that must stay on a user's own computer.
 
 ## Supported imports
 
@@ -26,14 +33,14 @@ Uploaded files are read into browser memory and are never posted to the local se
 
 These are **analysis method versions, not HyPhy executable versions**. The fixtures do not report a verified executable version. Newer or different method versions are rejected even if they look similar. Supporting an entire HyPhy release family is not claimed.
 
-Only single-partition outputs with documented `MLE.headers`, `MLE.content`, `data partitions.0.coverage`, input tree, counts, and tested-branch labels are accepted. The limit is 25 MiB per file and 100,000 alignment codons; large-file responsiveness is not benchmarked. No native FUBAR, aBSREL, RELAX, GARD, or normalized project-JSON importer is included. There was no starter project or legacy importer to preserve.
+Only single-partition outputs with documented `MLE.headers`, `MLE.content`, `data partitions.0.coverage`, input tree, counts, and tested-branch labels are accepted. Local limits are 25 MiB/file, 50 MiB/workspace, 20 files, and 100,000 alignment codons; hosted limits are smaller. Large-file responsiveness and concurrency are not benchmarked. No native FUBAR, aBSREL, RELAX, GARD, or normalized project-JSON importer is included.
 
 See [format provenance and field mapping](docs/imports.md) for pinned official references, header mapping, coordinate conventions, fixture hashes, expected values, and rejection rules.
 
 ## Example workflow
 
 1. Open the app. The amber banner and source names label the built-in example as **SYNTHETIC**. It is hand-authored illustrative evidence, not a HyPhy analysis or a biological simulation.
-2. Click a codon to compare the synthetic FEL, MEME, and Contrast-FEL evidence. Arrow keys move along codons; Home/End select the first/last alignment codon. Choose a window or start coordinate to navigate.
+2. Click a codon to compare the synthetic FEL, MEME, and Contrast-FEL evidence, or enter a number in **Inspect codon** and press Enter. Choose a window, start coordinate, or Previous/Next to navigate. Numeric controls provide a keyboard alternative to chart clicks.
 3. Import `fixtures/CD2.FEL.json` and `fixtures/CD2.MEME.json` together. Both remain in the analysis list; selecting either shows its native track and source-specific inspector. FEL codon 11 illustrates supported purifying selection at p ≤ 0.05; MEME codon 43 illustrates episodic diversification.
 4. Change the explicitly **unadjusted exploratory threshold**. Raw p-values remain unchanged. Inspect original row values, column descriptions, branch scope, partition mapping, input metadata, and available fits.
 5. Export **Evidence CSV** for all alignment codons of the active analysis or synthetic group; export **Figure SVG** for its chosen coordinate window, with legend, settings, and scientific interpretation notes. Source JSON can be downloaded as the original decoded text; the app does not rewrite its fields.
@@ -60,7 +67,21 @@ Recombination-partitioned files are rejected rather than flattened. Partition da
 
 SVG figures use system fonts and do not embed fonts. Browser state is not persisted; there is no project save/restore yet. The app does not recompute likelihoods, validate a tree against an alignment, assess convergence, or rerun HyPhy. Accessibility was checked through keyboard behavior, text labels, symbols, and narrow-screen layout; no formal screen-reader audit was performed.
 
-## Tests
+## Python and Dash tests
+
+```sh
+python -m pip install -r requirements-dev.txt
+python -m pytest -q tests/test_python.py tests/test_hosting.py
+python scripts/dash_smoke.py
+```
+
+The Python suite verifies the same pinned official fixtures and expected values, plus upload isolation, deployment settings, hosted privacy wording, health checks, and WSGI routes. The Chrome/Chromium smoke test exercises actual Plotly clicks, threshold controls, numeric codon navigation, switching files, invalid-file recovery, mobile layout, and CSV/SVG/original downloads. It records screenshots under ignored `.artifacts/`. Supply `--browser /path/to/chrome` if auto-detection fails.
+
+Linux CI additionally starts the real production server with `python scripts/gunicorn_smoke.py`. Gunicorn cannot run on Windows; that production check has not been verified locally here. GitHub Actions now includes both Python/Dash and legacy browser checks. See [validation record](docs/validation.md).
+
+## Preserved static prototype
+
+The earlier JavaScript app (`index.html`, `src/`, `style.css`) is retained and can still be served with `python -m http.server 8000 --bind 127.0.0.1`. This is separate from the Dash server on port 8050 and has browser-only file processing. Its regression tests remain available:
 
 With Node.js 20 or later, no package installation is needed:
 
@@ -70,7 +91,7 @@ npm test
 node tests/run.mjs
 ```
 
-The same module suite runs at **http://127.0.0.1:8000/tests/** without Node. It checks pinned fixture hashes and known estimates, header reordering, sparse/reordered coordinates, invalid/missing values, unsupported inputs, partition rejection, branch scope, scientific classification, compatibility, and export escaping.
+The same JavaScript module suite runs at **http://127.0.0.1:8000/tests/** without Node. It checks pinned fixture hashes and known estimates, header reordering, sparse/reordered coordinates, invalid/missing values, unsupported inputs, partition rejection, branch scope, scientific classification, compatibility, and export escaping.
 
 Real browser smoke tests use installed Chrome/Chromium or Edge and Python's development-only WebSocket client:
 
@@ -85,6 +106,16 @@ The script starts a temporary localhost server and an isolated headless browser,
 GitHub Actions runs the Node suite and Chromium smoke script. See [validation record](docs/validation.md) for what was executed locally and what remains unverified.
 
 ## Structure
+
+- `app.py`: Dash layout and callbacks; local entry point on port 8050.
+- `shift_happens/imports.py`, `validation.py`: UTF-8 decoding, schema validation, normalization.
+- `shift_happens/model.py`, `demo.py`: method-specific evidence and isolated synthetic data.
+- `shift_happens/views.py`, `exports.py`: Plotly/Dash rendering and portable CSV/SVG output.
+- `shift_happens/workspace.py`, `config.py`: per-browser workspace operations and instance limits.
+- `wsgi.py`, `gunicorn.conf.py`, `render.yaml`: production entry point and Render Blueprint.
+- `assets/dash.css`: Dash interface styles.
+
+Preserved static app:
 
 - `src/hyphy.js`: size limits and JSON decoding.
 - `src/validation.js`: native schema validation, normalization, and provenance retention.

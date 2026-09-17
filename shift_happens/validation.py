@@ -20,7 +20,7 @@ def single_partition(value):
     return isinstance(value, dict) and list(value) == ["0"]
 
 
-def validate_document(raw):
+def validate_document(raw, max_codons=100000):
     require(isinstance(raw, dict) and isinstance(raw.get("analysis"), dict),
             "Missing analysis metadata. Native HyPhy JSON is required; normalized project JSON is a different format.")
     info = raw["analysis"].get("info")
@@ -32,7 +32,7 @@ def validate_document(raw):
     source = raw.get("input")
     require(isinstance(source, dict), "Missing input metadata. Export the complete HyPhy output.")
     length = source.get("number of sites")
-    require(type(length) is int and 0 < length <= 100000, "input.number of sites must be an integer from 1 to 100000 codons.")
+    require(type(length) is int and 0 < length <= max_codons, f"input.number of sites must be an integer from 1 to {max_codons} codons on this instance.")
     sequences = source.get("number of sequences")
     require(type(sequences) is int and sequences > 0, "Missing or invalid input.number of sequences.")
     require(type(source.get("partition count")) is int and source["partition count"] == 1 and single_partition(raw.get("data partitions")),

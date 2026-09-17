@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: shift-happens
+    runtime: python
+    plan: free
+    buildCommand: python -m pip install -r requirements-render.txt
+    startCommand: gunicorn --config gunicorn.conf.py wsgi:server
+    healthCheckPath: /healthz
+    autoDeployTrigger: "off"
+    envVars:
+      - key: SHIFT_HAPPENS_HOSTED
+        value: "true"
+      - key: SHIFT_HAPPENS_MAX_FILE_MIB
+        value: "5"
+      - key: SHIFT_HAPPENS_MAX_WORKSPACE_MIB
+        value: "10"
+      - key: SHIFT_HAPPENS_MAX_CODONS
+        value: "10000"
+      - key: PYTHONUNBUFFERED
+        value: "1"

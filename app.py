@@ -3,6 +3,8 @@ import argparse
 from pathlib import Path
 from dash import Dash, Input, Output, State, ctx, dcc, html, no_update
 from dash.exceptions import PreventUpdate
+from flask import request
+from shift_happens.config import Settings
 from shift_happens.exports import evidence_csv, figure_svg
 from shift_happens.model import finite_number
 from shift_happens.views import inspector, legend, track_figure
@@ -15,21 +17,33 @@ def bounded(value, minimum, maximum, fallback):
     return min(maximum, max(minimum, int(value))) if finite_number(value) else fallback
 
 
-def create_app():
+def create_app(settings=None):
+    settings = settings or Settings.from_env()
     app = Dash(__name__, assets_folder=str(ROOT / "assets"), title="Shift Happens · See where selection changes.", update_title=None)
     # Includes base64 transport and Store payload overhead; domain limits are lower.
-    app.server.config["MAX_CONTENT_LENGTH"] = 160 * 1024 * 1024
+    app.server.config["MAX_CONTENT_LENGTH"] = settings.max_request_bytes
+
+    @app.server.get("/healthz")
+    def health():
+        return {"status": "ok"}
+
+    @app.server.after_request
+    def response_headers(response):
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        if request.path in ("/_dash-update-component", "/_dash-layout"):
+            response.headers["Cache-Control"] = "no-store"
+        return response
     def layout():
         workspace = initial_workspace()
         return html.Div([
             dcc.Store(id="workspace", storage_type="memory", data=workspace), dcc.Download(id="download"),
-            html.Header([html.Div("⇄", className="brand-mark"), html.Div([html.H1(["Shift Happens", html.Span("PYTHON / DASH", className="version")]), html.P("See where selection changes.")]), html.Span("● Runs on your computer", className="privacy")], className="masthead"),
+            html.Header([html.Div("⇄", className="brand-mark"), html.Div([html.H1(["Shift Happens", html.Span("PYTHON / DASH", className="version")]), html.P("See where selection changes.")]), html.Span("● Hosted server processing" if settings.hosted else "● Runs on your computer", className="privacy")], className="masthead"),
             html.Main([
                 html.Section([html.Div([html.P("EVOLUTION, IN CONTEXT", className="eyebrow"), html.H2(["Different methods.", html.Br(), "Distinct evidence."]), html.P("Explore conservation and diversification while keeping each statistical question in view.")]),
-                              html.Div([dcc.Upload(id="upload", children=html.Button("＋ Import HyPhy JSON", className="primary"), multiple=True, accept=".json,application/json", max_size=25*1024*1024), html.P("FEL 2.00 · MEME 2.1.1 · Single partition"), html.P("Files are processed by your local Python server."), html.Button("Open synthetic example →", id="demo", className="text-button")], className="import-box")], className="intro"),
+                              html.Div([dcc.Upload(id="upload", children=html.Button("＋ Import HyPhy JSON", className="primary"), multiple=True, accept=".json,application/json"), html.P(f"FEL 2.00 · MEME 2.1.1 · {settings.max_file_mib} MiB/file"), html.P("Uploads are sent to this hosted server for processing. Use local mode for data that must stay on your computer." if settings.hosted else "Files are processed by your local Python server."), html.Button("Open synthetic example →", id="demo", className="text-button")], className="import-box")], className="intro"),
                 html.Div(id="message", role="status", **{"aria-live": "polite"}),
                 html.Div([
-                    html.Aside([html.H2("Analyses"), html.P("Native files stay independent until shared alignment identity can be verified.", className="hint"), dcc.RadioItems(id="active", options=options(workspace), value="demo", className="analysis-list"), html.Button("Remove selected analysis", id="remove", className="remove-button"), html.P("Reloading clears this browser’s workspace. Up to 20 files / 50 MiB total.", className="hint")], className="panel files"),
+                    html.Aside([html.H2("Analyses"), html.P("Native files stay independent until shared alignment identity can be verified.", className="hint"), dcc.RadioItems(id="active", options=options(workspace), value="demo", className="analysis-list"), html.Button("Remove selected analysis", id="remove", className="remove-button"), html.P(f"Reloading clears this browser’s workspace. Up to 20 files / {settings.max_workspace_mib} MiB total / {settings.max_codons:,} codons per analysis.", className="hint")], className="panel files"),
                     html.Section([
                         html.Div([html.Div([html.P("ALONG THE ALIGNMENT", className="eyebrow"), html.H2("Selection evidence")]), html.Div([html.Button("Evidence CSV", id="csv"), html.Button("Figure SVG", id="svg"), html.Button("Original JSON", id="original")], className="export-buttons")], className="section-heading"),
                         html.Div(id="context", className="context"),
@@ -48,7 +62,7 @@ def create_app():
                     html.P([html.Strong("MEME "), "tests episodic diversification at a site. It does not establish purifying selection or locate a selected branch by itself."]),
                     html.P([html.Strong("Contrast-FEL "), "compares branch groups. A difference does not establish positive selection or pinpoint when a shift occurred. Synthetic illustration only."]),
                 ], className="reading-grid"), html.P("Nonsignificance is not proof of neutrality. These are inferred selective pressures, not measured fitness or a new statistical test. Never combine significant sites and branches from different methods to infer selected branch–site intersections.", className="footnote")], className="reading"),
-            ]), html.Footer("Shift Happens · Python + Dash · Local processing · No telemetry"),
+            ]), html.Footer("Shift Happens · Python + Dash · " + ("Hosted processing" if settings.hosted else "Local processing") + " · No application telemetry"),
         ])
     app.layout = layout
 
@@ -58,7 +72,7 @@ def create_app():
     def manage_workspace(contents, _demo, _remove, filenames, workspace, selected):
         notice = ""
         if ctx.triggered_id == "upload":
-            workspace, imported, notice = import_files(workspace, contents, filenames)
+            workspace, imported, notice = import_files(workspace, contents, filenames, settings)
             selected = imported or selected
         elif ctx.triggered_id == "demo":
             workspace = {**workspace, "demo": True}
@@ -77,7 +91,7 @@ def create_app():
                   Input("workspace", "data"), Input("active", "value"), Input("threshold", "value"), Input("window", "value"), Input("start", "value"), Input("codon", "value"),
                   Input("tracks", "clickData"), Input("previous", "n_clicks"), Input("next", "n_clicks"))
     def render(workspace, selected, threshold, window, start, codon, click, _previous, _next):
-        analyses = active_analyses(workspace, selected)
+        analyses = active_analyses(workspace, selected, settings)
         length = analyses[0].length if analyses else 1
         window = bounded(window, 1, 144, 72)
         start, codon = bounded(start, 1, length, 1), bounded(codon, 1, length, 1)
@@ -106,7 +120,7 @@ def create_app():
     @app.callback(Output("download", "data"), Input("csv", "n_clicks"), Input("svg", "n_clicks"), Input("original", "n_clicks"),
                   State("workspace", "data"), State("active", "value"), State("threshold", "value"), State("start", "value"), State("window", "value"), prevent_initial_call=True)
     def download(_csv, _svg, _original, workspace, selected, threshold, start, window):
-        analyses = active_analyses(workspace, selected)
+        analyses = active_analyses(workspace, selected, settings)
         if not analyses:
             raise PreventUpdate
         name = "shift-happens-SYNTHETIC" if analyses[0].synthetic else "shift-happens-evidence"
