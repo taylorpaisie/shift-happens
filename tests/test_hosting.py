@@ -64,6 +64,8 @@ def test_production_wsgi_entrypoint():
 
 
 def test_blueprint_and_gunicorn_contract(monkeypatch):
+    requirements = (ROOT / "requirements.txt").read_text().splitlines()
+    assert "gunicorn==23.0.0" in requirements
     blueprint = yaml.safe_load((ROOT / "render.yaml").read_text())
     service, = blueprint["services"]
     assert service["type"] == "web" and service["runtime"] == "python"
