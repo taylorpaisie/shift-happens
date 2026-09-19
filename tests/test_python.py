@@ -34,6 +34,7 @@ def upload(value):
 
 @pytest.mark.parametrize("name,digest", [
     ("CD2.FEL.json", "78ce35a9e9e6e2b5c8b6d819b121406fa00d02f913f02b67c4493d78229b3fed"),
+    ("FEL-2.6.Datamonkey.json", "87ca1554628aef7d94f3f06afc273c79bbcc1ff5ba47832afcfca17882730cd4"),
     ("CD2.MEME.json", "1f4e9819cb1fcd8a833bf6ac50bfa4324345c8456c8654348447a4513f0aeb50"),
     ("partitioned.FEL.json", "c826cda4dc13d61d6e5ac2b21ead918f20cdf115cd6a2ffe60bc2d36ce0084b5"),
 ])
@@ -52,6 +53,23 @@ def test_fel_expected_values_and_provenance():
     assert a.original_text == text() and a.filename == "source.json" and a.identity is None
     assert a.raw == json.loads(text()) and a.raw["fits"]["Nucleotide GTR"]
     assert a.raw["tested"]["0"]["Pig"] == "test"
+
+
+def test_fel_26_datamonkey_fixture_and_substitution_mapping():
+    a = parse_hyphy(text("FEL-2.6.Datamonkey.json"), "FEL_analysis.json")
+    assert a.method == "FEL" and a.version == "2.6" and a.length == 42
+    assert len(a.sites) == 42
+    assert a.sites[9].values == {
+        "alpha": 18.00931351361862,
+        "beta": 0.00006425039486038318,
+        "lrt": 6.720217894823282,
+        "p": 0.0095325979984765,
+        "branchLength": 1.087374464365363,
+    }
+    assert a.sites[42].values["p"] == 0.05979535762667387
+    assert classify(a, a.sites[9]) == "purifying"
+    assert a.raw["substitutions"]["0"]["8"]["root"] == "GTC"
+    assert a.raw["exportMetadata"]["method"] == "FEL"
 
 
 def test_meme_expected_values():
@@ -123,7 +141,7 @@ def test_invalid_values_are_not_zero(value):
     (lambda r: r["MLE"]["headers"][4].__setitem__(0, "Corrected P-value"), "correction metadata"),
     (lambda r: r["MLE"]["content"]["0"].pop(), "row count"),
     (lambda r: r["MLE"]["content"]["0"][0].pop(), "columns"),
-    (lambda r: r["analysis"].__setitem__("version", "2.6"), "Unsupported FEL method version"),
+    (lambda r: r["analysis"].__setitem__("version", "99.0"), "Unsupported FEL method version"),
     (lambda r: r["analysis"].__setitem__("info", "Contrast-FEL"), "Unsupported analysis"),
     (lambda r: r.pop("tested"), "branch scope"),
     (lambda r: r["tested"]["0"].__setitem__("Pig", "unknown"), "branch labels"),

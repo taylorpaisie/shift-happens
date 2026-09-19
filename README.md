@@ -27,7 +27,7 @@ Hosted mode explicitly tells users that uploaded data goes to the hosting server
 
 | Method | `analysis.version` verified | Scope | Fixture |
 | --- | --- | --- | --- |
-| FEL | `2.00` | Pervasive site selection in the reported test branches | Official mammalian CD2 output, 187 codons |
+| FEL | `2.00`, `2.6` | Pervasive site selection in the reported test branches | Official mammalian CD2 output, 187 codons; representative Datamonkey 2.6 output, 42 codons |
 | MEME | `2.00`, `2.1.1` | Episodic site diversification in the reported test branches | Official lysin and mammalian CD2 outputs |
 | Contrast-FEL | **No native import yet** | Synthetic branch-group difference illustration only | No adapter validation completed |
 

@@ -4,7 +4,7 @@ In the Dash app, choose **Import HyPhy / Datamonkey JSON** and select the **full
 
 | Method | Verified method versions | Scope |
 | --- | --- | --- |
-| FEL | `2.00` | Pervasive site evidence |
+| FEL | `2.00`, `2.6` | Pervasive site evidence |
 | MEME | `2.00`, `2.1.1` | Episodic site evidence |
 
 These are `analysis.version` values, not Datamonkey website releases or HyPhy executable versions. **Current Datamonkey jobs may use newer method versions.** Those remain rejected until representative nonpathogenic/synthetic outputs have been validated. Do not edit a version string to bypass validation. FUBAR, aBSREL, RELAX and other Datamonkey methods are not supported yet. Contrast-FEL remains an explicitly synthetic demonstration.
@@ -28,6 +28,14 @@ CSV tables are not sufficient substitutes: the importer needs version, tested-br
 ## Fixture evidence
 
 The existing official CD2 fixtures cover FEL 2.00 and MEME 2.1.1. Datamonkey contract tests add exactly the `PMID` field shown in the pinned server source to these fixtures and compare all normalized estimates with the unmodified originals. These are labeled **contract transformations**, not live Datamonkey downloads. No analysis job was submitted to Datamonkey.
+
+FEL 2.6 support is verified against the representative completed Datamonkey export supplied for this project:
+
+- Local fixture: `fixtures/FEL-2.6.Datamonkey.json` (content preserved; final newline normalized for the repository).
+- Repository fixture SHA-256: `87ca1554628aef7d94f3f06afc273c79bbcc1ff5ba47832afcfca17882730cd4`.
+- 10 sequences, 42 codons, one partition; zero-based coverage 0–41 maps to displayed codons 1–42.
+- The six header-driven MLE columns match the validated FEL contract. Codon 9 has α = `18.00931351361862`, β = `0.00006425039486038318`, and p = `0.0095325979984765`.
+- FEL 2.6 substitution mapping is retained in the original result object and original-JSON export. It does not alter the existing site-evidence interpretation.
 
 MEME 2.00 support is verified against the official nonpathogenic lysin tutorial output:
 

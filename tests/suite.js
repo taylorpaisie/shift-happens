@@ -6,13 +6,13 @@ function assert(value, message = 'Assertion failed') { if (!value) throw new Err
 function equal(a, b) { assert(Object.is(a, b), `Expected ${JSON.stringify(b)}, got ${JSON.stringify(a)}`); }
 function throws(fn, match) { try { fn(); } catch (e) { assert(match.test(e.message), e.message); return; } throw new Error(`Expected error matching ${match}`); }
 export async function runSuite(read, onResult = () => {}) {
-  const felText = await read('CD2.FEL.json'), memeText = await read('CD2.MEME.json'), partitioned = await read('partitioned.FEL.json');
+  const felText = await read('CD2.FEL.json'), fel26Text = await read('FEL-2.6.Datamonkey.json'), memeText = await read('CD2.MEME.json'), partitioned = await read('partitioned.FEL.json');
   const fel = parseHyPhy(felText, 'CD2.FEL.json'), meme = parseHyPhy(memeText, 'CD2.MEME.json');
   const modify = (fn, text = felText) => { const j = JSON.parse(text); fn(j); return parseHyPhy(JSON.stringify(j)); };
   const results = [];
   const test = async (name, fn) => { try { await fn(); results.push({name, ok:true}); } catch (e) { results.push({name, ok:false, error:e.message}); } onResult(results.at(-1)); };
-  await test('Official fixtures match their recorded SHA-256 digests', async () => {
-    for (const [text, expected] of [[felText, '78ce35a9e9e6e2b5c8b6d819b121406fa00d02f913f02b67c4493d78229b3fed'], [memeText, '1f4e9819cb1fcd8a833bf6ac50bfa4324345c8456c8654348447a4513f0aeb50'], [partitioned, 'c826cda4dc13d61d6e5ac2b21ead918f20cdf115cd6a2ffe60bc2d36ce0084b5']]) {
+  await test('Pinned fixtures match their recorded SHA-256 digests', async () => {
+    for (const [text, expected] of [[felText, '78ce35a9e9e6e2b5c8b6d819b121406fa00d02f913f02b67c4493d78229b3fed'], [fel26Text, '87ca1554628aef7d94f3f06afc273c79bbcc1ff5ba47832afcfca17882730cd4'], [memeText, '1f4e9819cb1fcd8a833bf6ac50bfa4324345c8456c8654348447a4513f0aeb50'], [partitioned, 'c826cda4dc13d61d6e5ac2b21ead918f20cdf115cd6a2ffe60bc2d36ce0084b5']]) {
       const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
       equal(Array.from(new Uint8Array(digest), b=>b.toString(16).padStart(2,'0')).join(''), expected);
     }
@@ -24,6 +24,13 @@ export async function runSuite(read, onResult = () => {}) {
     equal(siteAt(fel, 11).values.alpha, 1.569665853806078);
     equal(siteAt(fel, 187).values.beta, 0.8185143783777495);
     equal(siteAt(fel, 187).row, 186);
+  });
+  await test('Representative FEL 2.6 Datamonkey fixture preserves site values and substitution mapping', () => {
+    const a = parseHyPhy(fel26Text, 'FEL_analysis.json');
+    equal(a.method, 'FEL'); equal(a.version, '2.6'); equal(a.length, 42); equal(a.sites.length, 42);
+    equal(siteAt(a, 9).values.alpha, 18.00931351361862); equal(siteAt(a, 9).values.beta, 0.00006425039486038318);
+    equal(siteAt(a, 9).values.p, 0.0095325979984765); equal(classify(a, siteAt(a, 9)), 'purifying');
+    equal(a.raw.substitutions['0']['8'].root, 'GTC'); equal(a.raw.exportMetadata.method, 'FEL');
   });
   await test('Pinned MEME fixture: HTML header labels and native mixture estimates', () => {
     equal(meme.version, '2.1.1'); equal(meme.sites.length, 187);
@@ -93,7 +100,7 @@ export async function runSuite(read, onResult = () => {}) {
     throws(() => modify(j => { j.MLE.headers[4][0] = 'Corrected P-value'; }), /correction metadata/);
   });
   await test('Unsupported versions and methods are rejected', () => {
-    throws(() => modify(j => { j.analysis.version = '2.6'; }), /Unsupported FEL method version/);
+    throws(() => modify(j => { j.analysis.version = '99.0'; }), /Unsupported FEL method version/);
     throws(() => modify(j => { j.analysis.info = 'Contrast-FEL'; }), /Unsupported analysis/);
     throws(() => parseHyPhy('{"analyses":[]}'), /normalized project JSON/);
     throws(() => parseHyPhy('not JSON'), /Invalid JSON/);

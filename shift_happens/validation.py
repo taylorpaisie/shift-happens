@@ -2,7 +2,7 @@
 import re
 from .model import finite_number
 
-SUPPORTED = {"FEL": ("2.00",), "MEME": ("2.00", "2.1.1")}
+SUPPORTED = {"FEL": ("2.00", "2.6"), "MEME": ("2.00", "2.1.1")}
 ALIASES = {
     "alpha": "alpha", "alpha;": "alpha", "beta": "beta",
     "&beta;<sup>-</sup>": "betaMinus", "&beta;<sup>+</sup>": "betaPlus",
@@ -25,7 +25,7 @@ def validate_document(raw, max_codons=100000):
             "Missing analysis metadata. Full HyPhy or Datamonkey results JSON is required; normalized project JSON is a different format.")
     info = raw["analysis"].get("info")
     match = re.match(r"^(FEL|MEME)\s*\(", info.strip()) if isinstance(info, str) else None
-    require(match, "Unsupported analysis. Supported HyPhy/Datamonkey results: FEL 2.00 and MEME 2.00 / 2.1.1. Other Datamonkey methods are not yet validated; Contrast-FEL is demo-only.")
+    require(match, "Unsupported analysis. Supported HyPhy/Datamonkey results: FEL 2.00 / 2.6 and MEME 2.00 / 2.1.1. Other Datamonkey methods are not yet validated; Contrast-FEL is demo-only.")
     method = match.group(1)
     version = raw["analysis"].get("version")
     require(version in SUPPORTED[method], f"Unsupported {method} method version {version!r}. Verified: {', '.join(SUPPORTED[method])}. Datamonkey may run newer versions; a representative results JSON is needed for fixture validation. Do not edit the version field to force an import.")

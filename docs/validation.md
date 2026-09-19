@@ -1,5 +1,12 @@
 # Validation record
 
+## FEL 2.6 import increment
+
+- **81 Python tests passed**, including the supplied representative FEL 2.6 Datamonkey result, pinned fixture integrity, exact site estimates, substitution-map preservation, and rejection of still-unknown versions.
+- **27 JavaScript module tests passed in Chrome**, including the same FEL 2.6 fixture and native substitution map. The full legacy browser smoke test also passed.
+- **Dash browser smoke passed in Chrome** after the support-matrix update, covering real Plotly interaction, uploads, isolation, exports, invalid-file recovery, and responsive layout.
+- The FEL 2.6 file retains the same six header-driven MLE fields as FEL 2.00. Its added top-level `substitutions` map is preserved but does not change the site-evidence interpretation.
+
 ## Datamonkey import increment
 
 - **79 Python tests passed**, including pinned MEME 2.00 fixture values and coordinates, reordered headers, Datamonkey publication metadata preservation, wrong-download diagnostics, unsupported versions, and independent native analyses.

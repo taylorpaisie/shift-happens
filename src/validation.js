@@ -1,5 +1,5 @@
 // Native adapters deliberately limited to versions covered by pinned upstream fixtures.
-export const SUPPORTED = Object.freeze({ FEL: ['2.00'], MEME: ['2.1.1'] });
+export const SUPPORTED = Object.freeze({ FEL: ['2.00', '2.6'], MEME: ['2.1.1'] });
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 function requireValue(ok, message) { if (!ok) throw new Error(message); }
 const aliases = new Map([
@@ -13,7 +13,7 @@ export function validateHyPhy(raw, filename, text) {
   requireValue(object(raw) && object(raw.analysis), 'Missing analysis metadata. Only native HyPhy FEL and MEME JSON are supported; normalized project JSON is a different format.');
   const info = raw.analysis.info;
   const method = typeof info === 'string' ? /^(FEL|MEME)\s*\(/.exec(info.trim())?.[1] : undefined;
-  requireValue(method, 'Unsupported analysis. Import native FEL 2.00 or MEME 2.1.1 JSON. Contrast-FEL and other methods are not yet validated.');
+  requireValue(method, 'Unsupported analysis. Import native FEL 2.00 / 2.6 or MEME 2.1.1 JSON. Contrast-FEL and other methods are not yet validated.');
   const version = raw.analysis.version;
   requireValue(SUPPORTED[method].includes(version), `Unsupported ${method} method version ${String(version)}. Verified versions: ${SUPPORTED[method].join(', ')}. Keep the original file; request validation of a fixture for this version.`);
   requireValue(object(raw.input), 'Missing input metadata. Re-export the complete HyPhy output.');
