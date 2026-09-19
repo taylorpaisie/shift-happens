@@ -36,6 +36,7 @@ def upload(value):
     ("CD2.FEL.json", "78ce35a9e9e6e2b5c8b6d819b121406fa00d02f913f02b67c4493d78229b3fed"),
     ("FEL-2.6.Datamonkey.json", "87ca1554628aef7d94f3f06afc273c79bbcc1ff5ba47832afcfca17882730cd4"),
     ("CD2.MEME.json", "1f4e9819cb1fcd8a833bf6ac50bfa4324345c8456c8654348447a4513f0aeb50"),
+    ("MEME-4.1.Datamonkey.json", "f5958329a27eab0af03ee7f2591349ada5b5f6ecdf5addac87b91724560aae51"),
     ("partitioned.FEL.json", "c826cda4dc13d61d6e5ac2b21ead918f20cdf115cd6a2ffe60bc2d36ce0084b5"),
 ])
 def test_fixture_integrity(name, digest):
@@ -81,7 +82,38 @@ def test_meme_expected_values():
     assert a.sites[187].values["alpha"] == 2.937024731663259
 
 
-@pytest.mark.parametrize("name", ["CD2.FEL.json", "CD2.MEME.json"])
+def test_meme_41_two_rate_datamonkey_fixture():
+    a = parse_hyphy(text("MEME-4.1.Datamonkey.json"), "MEME_analysis.json")
+    assert a.method == "MEME" and a.version == "4.1" and a.length == 42
+    assert len(a.sites) == 42
+    assert a.sites[9].values == {
+        "alpha": 197.6198312808342,
+        "betaMinus": 2.750646394050493e-07,
+        "betaPlus": 0.6735577494469006,
+        "weightMinus": 1,
+        "weightPlus": 0,
+        "lrt": 0,
+        "p": 0.6666666666666666,
+        "branchLength": 0,
+    }
+    assert "Zero inferred branch length" in a.sites[9].issues[0]
+    assert classify(a, a.sites[9]) == "insufficient"
+    assert a.raw["substitutions"]["0"]["8"]["root"] == "GTC"
+    assert a.raw["exportMetadata"]["method"] == "MEME"
+    assert len(a.raw["MLE"]["headers"]) == 13
+
+
+@pytest.mark.parametrize("key,value,pattern", [
+    ("rates", 3, "rates = 2"),
+    ("multihit", "Double", "multihit"),
+    ("Imputed States", 1, "Imputed States"),
+])
+def test_meme_41_unvalidated_configurations_are_rejected(key, value, pattern):
+    with pytest.raises(ValueError, match=pattern):
+        changed(lambda r: r["analysis"]["settings"].__setitem__(key, value), "MEME-4.1.Datamonkey.json")
+
+
+@pytest.mark.parametrize("name", ["CD2.FEL.json", "CD2.MEME.json", "MEME-4.1.Datamonkey.json"])
 def test_header_order_independence(name):
     def reverse(raw):
         raw["MLE"]["headers"].reverse()

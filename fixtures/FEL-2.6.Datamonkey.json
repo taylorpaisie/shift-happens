@@ -1,0 +1,896 @@
+{
+  "MLE": {
+    "content": {
+      "0": [
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          1.283314323327018,
+          0.00003644728738011128,
+          0.3539474935857905,
+          2.497010546866633,
+          0.1140626288235906,
+          0.3291330466294433
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          1.857500135502707,
+          0.0001095169151451892,
+          0.9231695877158751,
+          2.405309345877727,
+          0.1209242182038045,
+          0.858448285315873
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          1.775292400919832,
+          0.00001618756382224008,
+          0.3512419567523122,
+          3.045628162262128,
+          0.08095479136734673,
+          0.3266171887779025
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          18.00931351361862,
+          0.00006425039486038318,
+          1.169355281071562,
+          6.720217894823282,
+          0.0095325979984765,
+          1.087374464365363
+        ],
+        [
+          1.025999869426599,
+          0.5034947968536005,
+          0.685066343551979,
+          0.2295281125670812,
+          0.6318739468670325,
+          0.6370379134833566
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          1.171414902002802,
+          0.00001106492442322482,
+          0.5039031100641388,
+          3.203702009856205,
+          0.07347178550764011,
+          0.4685756187768066
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0.000007814455255933973,
+          0.431928421884658,
+          0.3539880527911977,
+          0.3725099905892684,
+          0.5416392771046454,
+          0.3291707623219862
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          4.680925624948571,
+          0.00001205526792998204,
+          0.3142899365775785,
+          4.879826351001334,
+          0.02717235264925133,
+          0.292255789983946
+        ],
+        [
+          1.05025691447767,
+          1.224201499234201e-7,
+          0.3136339972527548,
+          2.367749339552541,
+          0.1238655171232393,
+          0.291645837060714
+        ],
+        [
+          8.989623512546592,
+          0.00001599521616915957,
+          0.9223447159721909,
+          10.47011866699698,
+          0.00121320925231394,
+          0.8576812434382011
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          14.00087043339344,
+          0.000002321675874728092,
+          1.32755536119075,
+          11.49438002581293,
+          0.0006980693896569967,
+          1.234483499717325
+        ],
+        [
+          18.72451229755921,
+          0.000007485479361781503,
+          0.4971856425677448,
+          5.782138791384932,
+          0.01618982938653846,
+          0.4623290975193067
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          1.516982440301077,
+          0.000001880102479145767,
+          0.2375994639109673,
+          3.543051539124411,
+          0.05979535762667387,
+          0.2209419104576434
+        ]
+      ]
+    },
+    "headers": [
+      [
+        "alpha",
+        "Synonymous substitution rate at a site"
+      ],
+      [
+        "beta",
+        "Non-synonymous substitution rate at a site"
+      ],
+      [
+        "alpha=beta",
+        "The rate estimate under the neutral model"
+      ],
+      [
+        "LRT",
+        "Likelihood ratio test statistic for beta = alpha, versus beta &neq; alpha"
+      ],
+      [
+        "p-value",
+        "Asymptotic p-value for evidence of selection, i.e. beta &neq; alpha"
+      ],
+      [
+        "Total branch length",
+        "The total length of branches contributing to inference at this site, and used to scale dN-dS"
+      ]
+    ]
+  },
+  "analysis": {
+    "authors": "Sergei L Kosakovsky Pond and Simon DW Frost",
+    "citation": "Not So Different After All: A Comparison of Methods for Detecting Amino Acid Sites Under Selection (2005). _Mol Biol Evol_ 22 (5): 1208-1222",
+    "contact": "spond@temple.edu",
+    "info": "FEL (Fixed Effects Likelihood)\n    estimates site-wise synonymous (&alpha;) and non-synonymous (&beta;) rates, and\n    uses a likelihood ratio test to determine if beta &neq; alpha at a site.\n    The estimates aggregate information over all branches,\n    so the signal is derived from\n    pervasive diversification or conservation. A subset of branches can be selected\n    for testing as well, in which case an additional (nuisance) parameter will be\n    inferred -- the non-synonymous rate on branches NOT selected for testing.\n    Multiple partitions within a NEXUS file are also supported\n    for recombination - aware analysis. Version 2.5 adds MH support. Version 2.6 adds substitution mapping.\n    ",
+    "requirements": "in-frame codon alignment and a phylogenetic tree",
+    "settings": {
+      "ci": 0,
+      "multihit": "None",
+      "pvalue": 0.1,
+      "resample": 0,
+      "site-filter": {
+        "site-filter": null,
+        "site-save-filter": null
+      },
+      "srv": 1
+    },
+    "version": "2.6"
+  },
+  "branch attributes": {
+    "0": {
+      "CALLITHRIX_JACCHUS": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.000001,
+        "original name": "CALLITHRIX_JACCHUS"
+      },
+      "CANIS_LUPUS": {
+        "Global MG94xREV": 0.007533840410078786,
+        "Nucleotide GTR": 0.01392835388657157,
+        "original name": "CANIS_LUPUS"
+      },
+      "FELIS_CATUS": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.000001,
+        "original name": "FELIS_CATUS"
+      },
+      "GORILLA_GORILLA": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.000001,
+        "original name": "GORILLA_GORILLA"
+      },
+      "HOMO_SAPIENS": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.000001,
+        "original name": "HOMO_SAPIENS"
+      },
+      "MACACA_MULATTA": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.000001,
+        "original name": "MACACA_MULATTA"
+      },
+      "MUS_MUSCULUS": {
+        "Global MG94xREV": 0.04305819869279485,
+        "Nucleotide GTR": 0.03155158072727462,
+        "original name": "MUS_MUSCULUS"
+      },
+      "Node4": {
+        "Global MG94xREV": 0.008367787326922173,
+        "Nucleotide GTR": 0.007970667754061205
+      },
+      "Node7": {
+        "Global MG94xREV": 0.05010135676163721,
+        "Nucleotide GTR": 0.04105031308067936
+      },
+      "Node8": {
+        "Global MG94xREV": 0.01722742338206429,
+        "Nucleotide GTR": 0.01041054010967604
+      },
+      "Node9": {
+        "Global MG94xREV": 0.06656241357267219,
+        "Nucleotide GTR": 0.05132314911192185
+      },
+      "PAN_TROGLODYTES": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.000001,
+        "original name": "PAN_TROGLODYTES"
+      },
+      "PONGO_ABELII": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.000001,
+        "original name": "PONGO_ABELII"
+      },
+      "RATTUS_NORVEGICUS": {
+        "Global MG94xREV": 0,
+        "Nucleotide GTR": 0.009288545308844811,
+        "original name": "RATTUS_NORVEGICUS"
+      }
+    },
+    "attributes": {
+      "Global MG94xREV": {
+        "attribute type": "branch length",
+        "display order": 1
+      },
+      "Nucleotide GTR": {
+        "attribute type": "branch length",
+        "display order": 0
+      },
+      "original name": {
+        "attribute type": "node label",
+        "display order": -1
+      }
+    }
+  },
+  "data partitions": {
+    "0": {
+      "coverage": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ]
+      ],
+      "name": "fel.filter.default"
+    }
+  },
+  "fits": {
+    "Global MG94xREV": {
+      "AIC-c": 536.8219580924061,
+      "Equilibrium frequencies": [
+        [
+          0.005100214567419373
+        ],
+        [
+          0.02813719862344111
+        ],
+        [
+          0.02367708876608753
+        ],
+        [
+          0.003600818714159618
+        ],
+        [
+          0.002893615365080388
+        ],
+        [
+          0.01596368725096683
+        ],
+        [
+          0.01343323637628628
+        ],
+        [
+          0.002042930590552256
+        ],
+        [
+          0.00187924785776388
+        ],
+        [
+          0.01036755797968972
+        ],
+        [
+          0.008724165964701566
+        ],
+        [
+          0.001326773759286064
+        ],
+        [
+          0.003571434231276054
+        ],
+        [
+          0.01970312287994924
+        ],
+        [
+          0.01657992309899097
+        ],
+        [
+          0.00252147964489974
+        ],
+        [
+          0.009134880678777681
+        ],
+        [
+          0.0503959095568513
+        ],
+        [
+          0.04240750616272111
+        ],
+        [
+          0.006449346172586841
+        ],
+        [
+          0.005182690010561978
+        ],
+        [
+          0.02859220456379589
+        ],
+        [
+          0.02405997038067378
+        ],
+        [
+          0.003659047464185867
+        ],
+        [
+          0.003365878968344599
+        ],
+        [
+          0.01856910210793248
+        ],
+        [
+          0.01562565928470852
+        ],
+        [
+          0.002376354919699777
+        ],
+        [
+          0.006396716279981215
+        ],
+        [
+          0.03528982440413299
+        ],
+        [
+          0.02969593086143953
+        ],
+        [
+          0.004516166013340961
+        ],
+        [
+          0.01240778803643496
+        ],
+        [
+          0.0684520997781033
+        ],
+        [
+          0.05760155672786089
+        ],
+        [
+          0.00876006190961634
+        ],
+        [
+          0.007039579538132127
+        ],
+        [
+          0.03883641463934678
+        ],
+        [
+          0.03268034067920079
+        ],
+        [
+          0.00497003594763408
+        ],
+        [
+          0.004571829043431183
+        ],
+        [
+          0.02522216666906407
+        ],
+        [
+          0.02122412707422008
+        ],
+        [
+          0.003227771569197949
+        ],
+        [
+          0.00868857542010498
+        ],
+        [
+          0.04793370339984364
+        ],
+        [
+          0.04033559152331172
+        ],
+        [
+          0.006134248776896356
+        ],
+        [
+          0.03639248090108871
+        ],
+        [
+          0.004657276939224679
+        ],
+        [
+          0.00374258444552666
+        ],
+        [
+          0.02064733562024782
+        ],
+        [
+          0.0173744659092157
+        ],
+        [
+          0.002642313952213567
+        ],
+        [
+          0.01340933618929847
+        ],
+        [
+          0.01128378299124012
+        ],
+        [
+          0.001716041079322582
+        ],
+        [
+          0.004619271228477144
+        ],
+        [
+          0.0254838988307452
+        ],
+        [
+          0.02144437130350526
+        ],
+        [
+          0.003261266377209635
+        ]
+      ],
+      "Log Likelihood": -237.1802098154338,
+      "Rate Distributions": {
+        "non-synonymous/synonymous rate ratio for *test*": [
+          [
+            0.02078913902053818,
+            1
+          ]
+        ]
+      },
+      "display order": 1,
+      "estimated parameters": 29
+    },
+    "Nucleotide GTR": {
+      "AIC-c": 600.6236534814057,
+      "Equilibrium frequencies": [
+        [
+          0.1984126984126984
+        ],
+        [
+          0.3309523809523809
+        ],
+        [
+          0.3023809523809524
+        ],
+        [
+          0.1682539682539683
+        ]
+      ],
+      "Log Likelihood": -274.7850844392441,
+      "Rate Distributions": {
+        "Substitution rate from nucleotide A to nucleotide C": 0.3574399804112646,
+        "Substitution rate from nucleotide A to nucleotide G": 1,
+        "Substitution rate from nucleotide A to nucleotide T": 0,
+        "Substitution rate from nucleotide C to nucleotide G": 0.1688525647393372,
+        "Substitution rate from nucleotide C to nucleotide T": 0.6580923307156138,
+        "Substitution rate from nucleotide G to nucleotide T": 0.1911822579140452
+      },
+      "display order": 0,
+      "estimated parameters": 25
+    }
+  },
+  "input": {
+    "file name": "/shared/data/user.nex",
+    "number of sequences": 10,
+    "number of sites": 42,
+    "partition count": 1,
+    "trees": {
+      "0": "(PONGO_ABELII:-1,CALLITHRIX_JACCHUS:1e-10,GORILLA_GORILLA:1e-10,HOMO_SAPIENS:-1,(MACACA_MULATTA:-1,PAN_TROGLODYTES:-1,(((MUS_MUSCULUS:0.01910304741134107,RATTUS_NORVEGICUS:0.02303359628191318)Node9:0.03551497694868394,CANIS_LUPUS:0.01460038368358101)Node8:0.004125225461331699,FELIS_CATUS:0.01071078767572859)Node7:0.0302491854263707)Node4:1e-10)"
+    }
+  },
+  "runtime": "2.5.98",
+  "substitutions": {
+    "0": {
+      "0": null,
+      "1": {
+        "Node9": "CCT",
+        "root": "CCG"
+      },
+      "2": null,
+      "3": {
+        "MUS_MUSCULUS": "CTG",
+        "Node9": "CTA",
+        "root": "CTG"
+      },
+      "4": null,
+      "5": {
+        "Node7": "GCC",
+        "root": "GCA"
+      },
+      "6": null,
+      "7": null,
+      "8": {
+        "CANIS_LUPUS": "GTC",
+        "MUS_MUSCULUS": "GTG",
+        "Node7": "GTA",
+        "root": "GTC"
+      },
+      "9": {
+        "Node7": "GCT",
+        "Node9": "GCC",
+        "root": "GTT"
+      },
+      "10": null,
+      "11": {
+        "MUS_MUSCULUS": "GCG",
+        "Node7": "GCA",
+        "root": "GCG"
+      },
+      "12": null,
+      "13": null,
+      "14": null,
+      "15": {
+        "Node8": "GCG",
+        "root": "ACG"
+      },
+      "16": null,
+      "17": null,
+      "18": null,
+      "19": null,
+      "20": null,
+      "21": null,
+      "22": {
+        "Node4": "GGC",
+        "root": "GGT"
+      },
+      "23": {
+        "Node9": "GAG",
+        "root": "GAA"
+      },
+      "24": {
+        "MUS_MUSCULUS": "GGA",
+        "Node8": "GGT",
+        "Node9": "GGG",
+        "root": "GGC"
+      },
+      "25": null,
+      "26": null,
+      "27": null,
+      "28": null,
+      "29": null,
+      "30": null,
+      "31": null,
+      "32": null,
+      "33": null,
+      "34": null,
+      "35": null,
+      "36": null,
+      "37": {
+        "Node7": "CCG",
+        "Node9": "CCC",
+        "root": "CCC"
+      },
+      "38": {
+        "MUS_MUSCULUS": "CAT",
+        "root": "CAC"
+      },
+      "39": null,
+      "40": null,
+      "41": {
+        "Node9": "AAA",
+        "root": "AAG"
+      }
+    }
+  },
+  "tested": {
+    "0": {
+      "CALLITHRIX_JACCHUS": "test",
+      "CANIS_LUPUS": "test",
+      "FELIS_CATUS": "test",
+      "GORILLA_GORILLA": "test",
+      "HOMO_SAPIENS": "test",
+      "MACACA_MULATTA": "test",
+      "MUS_MUSCULUS": "test",
+      "Node4": "test",
+      "Node7": "test",
+      "Node8": "test",
+      "Node9": "test",
+      "PAN_TROGLODYTES": "test",
+      "PONGO_ABELII": "test",
+      "RATTUS_NORVEGICUS": "test"
+    }
+  },
+  "timers": {
+    "FEL analysis": {
+      "order": 2,
+      "timer": 2
+    },
+    "Model fitting": {
+      "order": 1,
+      "timer": 1
+    },
+    "Total time": {
+      "order": 0,
+      "timer": 3
+    }
+  },
+  "exportMetadata": {
+    "analysisId": "f5abbf0f-4786-49c8-af91-72a4cdad638e",
+    "method": "FEL",
+    "createdAt": 1789831597569,
+    "completedAt": 1789831600977,
+    "filename": "medium.nex",
+    "exportDate": "2026-09-19T15:28:23.769Z"
+  }
+}

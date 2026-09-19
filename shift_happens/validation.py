@@ -2,11 +2,11 @@
 import re
 from .model import finite_number
 
-SUPPORTED = {"FEL": ("2.00", "2.6"), "MEME": ("2.00", "2.1.1")}
+SUPPORTED = {"FEL": ("2.00", "2.6"), "MEME": ("2.00", "2.1.1", "4.1")}
 ALIASES = {
-    "alpha": "alpha", "alpha;": "alpha", "beta": "beta",
-    "&beta;<sup>-</sup>": "betaMinus", "&beta;<sup>+</sup>": "betaPlus",
-    "p<sup>-</sup>": "weightMinus", "p<sup>+</sup>": "weightPlus",
+    "alpha": "alpha", "alpha;": "alpha", "&alpha;": "alpha", "beta": "beta",
+    "&beta;<sup>-</sup>": "betaMinus", "&beta;<sup>1</sup>": "betaMinus", "&beta;<sup>+</sup>": "betaPlus",
+    "p<sup>-</sup>": "weightMinus", "p<sup>1</sup>": "weightMinus", "p<sup>+</sup>": "weightPlus",
     "LRT": "lrt", "p-value": "p", "Total branch length": "branchLength",
 }
 
@@ -25,10 +25,18 @@ def validate_document(raw, max_codons=100000):
             "Missing analysis metadata. Full HyPhy or Datamonkey results JSON is required; normalized project JSON is a different format.")
     info = raw["analysis"].get("info")
     match = re.match(r"^(FEL|MEME)\s*\(", info.strip()) if isinstance(info, str) else None
-    require(match, "Unsupported analysis. Supported HyPhy/Datamonkey results: FEL 2.00 / 2.6 and MEME 2.00 / 2.1.1. Other Datamonkey methods are not yet validated; Contrast-FEL is demo-only.")
+    require(match, "Unsupported analysis. Supported HyPhy/Datamonkey results: FEL 2.00 / 2.6 and MEME 2.00 / 2.1.1 / 4.1. Other Datamonkey methods are not yet validated; Contrast-FEL is demo-only.")
     method = match.group(1)
     version = raw["analysis"].get("version")
     require(version in SUPPORTED[method], f"Unsupported {method} method version {version!r}. Verified: {', '.join(SUPPORTED[method])}. Datamonkey may run newer versions; a representative results JSON is needed for fixture validation. Do not edit the version field to force an import.")
+    if method == "MEME" and version == "4.1":
+        settings = raw["analysis"].get("settings")
+        require(isinstance(settings, dict) and type(settings.get("rates")) is int and settings["rates"] == 2,
+                "MEME 4.1 imports currently require analysis.settings.rates = 2; outputs with more rate classes need a different evidence model.")
+        require(settings.get("multihit") == "None",
+                "MEME 4.1 imports currently require analysis.settings.multihit = 'None'; multiple-hit output has not been validated.")
+        require(type(settings.get("Imputed States")) is int and settings["Imputed States"] == 0,
+                "MEME 4.1 imports currently require analysis.settings['Imputed States'] = 0; imputed-state output has not been validated.")
     source = raw.get("input")
     require(isinstance(source, dict), "Missing input metadata. Export the complete HyPhy output.")
     length = source.get("number of sites")

@@ -16,7 +16,7 @@ The CD2 fixtures are mammalian CD2 examples with ten taxa. They are **not** labe
 
 ## Adapter contract
 
-1. Recognize the method from the `FEL (` or `MEME (` prefix in documented `analysis.info`. The Python/Dash adapter requires exact fixture-covered string versions: FEL `2.00`, MEME `2.00` or `2.1.1`. The additional official lysin fixture and Datamonkey download contract are documented in [datamonkey.md](datamonkey.md); the preserved JavaScript prototype retains MEME `2.1.1` only.
+1. Recognize the method from the `FEL (` or `MEME (` prefix in documented `analysis.info`. The Python/Dash adapter requires exact fixture-covered string versions: FEL `2.00` or `2.6`; MEME `2.00`, `2.1.1`, or `4.1`. MEME 4.1 additionally requires the validated two-rate, no-multiple-hit, no-imputation configuration. The additional fixtures and Datamonkey download contract are documented in [datamonkey.md](datamonkey.md); the preserved JavaScript prototype supports the fixture-covered FEL versions and MEME `2.1.1` / compatible `4.1`.
 2. Require one partition, keyed `0`, consistently in input counts, partition metadata, trees, tested branches, and MLE results. Reject multiple partitions even if a count was changed to one.
 3. Treat `input.number of sites` as the alignment codon count for these formats. Read the ordered, zero-based codon coordinate list from `data partitions.0.coverage[0]`. Each `MLE.content.0` row maps to the corresponding coverage entry. Display `coverage[i] + 1`, retain source row `i` and partition `0`, and reject duplicates, fractional/negative/out-of-range coordinates, malformed matrices, or row-count mismatches. Never divide these codon coordinates by three.
 4. Build a column index from header names, retaining each accompanying description and every original column. Reordering the entire header/row table leaves the normalized values unchanged.
@@ -25,11 +25,11 @@ The CD2 fixtures are mammalian CD2 examples with ten taxa. They are **not** labe
 
 | Semantic value | FEL header | MEME header |
 | --- | --- | --- |
-| Synonymous rate | `alpha` | `alpha;` |
+| Synonymous rate | `alpha` | `alpha;` (2.x) or `&alpha;` (4.1) |
 | Nonsynonymous rate | `beta` | Separate mixture components below |
-| Negative/neutral component | — | `&beta;<sup>-</sup>` |
+| Negative/neutral component | — | `&beta;<sup>-</sup>` (2.x) or `&beta;<sup>1</sup>` (two-rate 4.1) |
 | Positive/neutral component | — | `&beta;<sup>+</sup>` |
-| Component weights | — | `p<sup>-</sup>` and `p<sup>+</sup>` |
+| Component weights | — | `p<sup>-</sup>` / `p<sup>+</sup>` (2.x) or `p<sup>1</sup>` / `p<sup>+</sup>` (two-rate 4.1) |
 | Likelihood-ratio statistic | `LRT` | `LRT` |
 | Native site p-value | `p-value` | `p-value` |
 | Inferred total branch length | `Total branch length` | `Total branch length` |

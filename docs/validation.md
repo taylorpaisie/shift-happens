@@ -1,5 +1,13 @@
 # Validation record
 
+## MEME 4.1 import increment
+
+- **87 Python tests passed**, including the supplied representative MEME 4.1 Datamonkey result, exact two-rate mixture mapping, header-order independence, fixture integrity, native-field preservation, and configuration rejection.
+- **29 JavaScript module tests passed in Chrome**, including MEME 4.1 header aliases and rejection of additional rate classes, multiple hits, and imputed states. The full legacy browser smoke test also passed.
+- **Dash browser smoke passed in Chrome** after the support-matrix update, covering real Plotly interaction, uploads, isolation, exports, invalid-file recovery, and responsive layout.
+- Direct parsing of the original Downloads file succeeded as MEME 4.1 with 42 codons and 42 rows. Its parsed object is semantically identical to the repository fixture.
+- All native `Total branch length` values in this representative output are zero; the existing evidence model therefore reports its sites as insufficient information while retaining the original values.
+
 ## FEL 2.6 import increment
 
 - **81 Python tests passed**, including the supplied representative FEL 2.6 Datamonkey result, pinned fixture integrity, exact site estimates, substitution-map preservation, and rejection of still-unknown versions.

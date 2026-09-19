@@ -5,9 +5,11 @@ In the Dash app, choose **Import HyPhy / Datamonkey JSON** and select the **full
 | Method | Verified method versions | Scope |
 | --- | --- | --- |
 | FEL | `2.00`, `2.6` | Pervasive site evidence |
-| MEME | `2.00`, `2.1.1` | Episodic site evidence |
+| MEME | `2.00`, `2.1.1`, `4.1` | Episodic site evidence |
 
 These are `analysis.version` values, not Datamonkey website releases or HyPhy executable versions. **Current Datamonkey jobs may use newer method versions.** Those remain rejected until representative nonpathogenic/synthetic outputs have been validated. Do not edit a version string to bypass validation. FUBAR, aBSREL, RELAX and other Datamonkey methods are not supported yet. Contrast-FEL remains an explicitly synthetic demonstration.
+
+MEME 4.1 is accepted only when `analysis.settings` reports `rates: 2`, `multihit: "None"`, and `Imputed States: 0`. Version 4.1 outputs with additional rate classes, multiple hits, or imputed states remain rejected because those configurations have not been validated against the current two-component evidence model.
 
 ## What the download contains
 
@@ -36,6 +38,14 @@ FEL 2.6 support is verified against the representative completed Datamonkey expo
 - 10 sequences, 42 codons, one partition; zero-based coverage 0–41 maps to displayed codons 1–42.
 - The six header-driven MLE columns match the validated FEL contract. Codon 9 has α = `18.00931351361862`, β = `0.00006425039486038318`, and p = `0.0095325979984765`.
 - FEL 2.6 substitution mapping is retained in the original result object and original-JSON export. It does not alter the existing site-evidence interpretation.
+
+MEME 4.1 support is verified against the representative completed Datamonkey export supplied for this project:
+
+- Local fixture: `fixtures/MEME-4.1.Datamonkey.json` (content preserved; final newline normalized for the repository).
+- Repository fixture SHA-256: `f5958329a27eab0af03ee7f2591349ada5b5f6ecdf5addac87b91724560aae51`.
+- 10 sequences, 42 codons, one partition, and exactly two ω-rate classes.
+- The renamed `&alpha;`, `&beta;<sup>1</sup>`, and `p<sup>1</sup>` headers are mapped by name to the existing synonymous and negative/neutral component fields. The five additional native columns remain preserved.
+- Substitution mapping and export metadata remain preserved. All 42 native `Total branch length` values in this particular result are zero, so the viewer correctly marks its sites as insufficient information rather than inventing evidence.
 
 MEME 2.00 support is verified against the official nonpathogenic lysin tutorial output:
 

@@ -6,13 +6,13 @@ function assert(value, message = 'Assertion failed') { if (!value) throw new Err
 function equal(a, b) { assert(Object.is(a, b), `Expected ${JSON.stringify(b)}, got ${JSON.stringify(a)}`); }
 function throws(fn, match) { try { fn(); } catch (e) { assert(match.test(e.message), e.message); return; } throw new Error(`Expected error matching ${match}`); }
 export async function runSuite(read, onResult = () => {}) {
-  const felText = await read('CD2.FEL.json'), fel26Text = await read('FEL-2.6.Datamonkey.json'), memeText = await read('CD2.MEME.json'), partitioned = await read('partitioned.FEL.json');
+  const felText = await read('CD2.FEL.json'), fel26Text = await read('FEL-2.6.Datamonkey.json'), memeText = await read('CD2.MEME.json'), meme41Text = await read('MEME-4.1.Datamonkey.json'), partitioned = await read('partitioned.FEL.json');
   const fel = parseHyPhy(felText, 'CD2.FEL.json'), meme = parseHyPhy(memeText, 'CD2.MEME.json');
   const modify = (fn, text = felText) => { const j = JSON.parse(text); fn(j); return parseHyPhy(JSON.stringify(j)); };
   const results = [];
   const test = async (name, fn) => { try { await fn(); results.push({name, ok:true}); } catch (e) { results.push({name, ok:false, error:e.message}); } onResult(results.at(-1)); };
   await test('Pinned fixtures match their recorded SHA-256 digests', async () => {
-    for (const [text, expected] of [[felText, '78ce35a9e9e6e2b5c8b6d819b121406fa00d02f913f02b67c4493d78229b3fed'], [fel26Text, '87ca1554628aef7d94f3f06afc273c79bbcc1ff5ba47832afcfca17882730cd4'], [memeText, '1f4e9819cb1fcd8a833bf6ac50bfa4324345c8456c8654348447a4513f0aeb50'], [partitioned, 'c826cda4dc13d61d6e5ac2b21ead918f20cdf115cd6a2ffe60bc2d36ce0084b5']]) {
+    for (const [text, expected] of [[felText, '78ce35a9e9e6e2b5c8b6d819b121406fa00d02f913f02b67c4493d78229b3fed'], [fel26Text, '87ca1554628aef7d94f3f06afc273c79bbcc1ff5ba47832afcfca17882730cd4'], [memeText, '1f4e9819cb1fcd8a833bf6ac50bfa4324345c8456c8654348447a4513f0aeb50'], [meme41Text, 'f5958329a27eab0af03ee7f2591349ada5b5f6ecdf5addac87b91724560aae51'], [partitioned, 'c826cda4dc13d61d6e5ac2b21ead918f20cdf115cd6a2ffe60bc2d36ce0084b5']]) {
       const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
       equal(Array.from(new Uint8Array(digest), b=>b.toString(16).padStart(2,'0')).join(''), expected);
     }
@@ -39,6 +39,19 @@ export async function runSuite(read, onResult = () => {}) {
     equal(siteAt(meme, 76).values.p, 0.002491251281779738);
     equal(siteAt(meme, 187).values.alpha, 2.937024731663259);
   });
+  await test('Representative two-rate MEME 4.1 fixture maps new headers and preserves extra fields', () => {
+    const a = parseHyPhy(meme41Text, 'MEME_analysis.json');
+    equal(a.method, 'MEME'); equal(a.version, '4.1'); equal(a.length, 42); equal(a.sites.length, 42);
+    equal(siteAt(a, 9).values.alpha, 197.6198312808342); equal(siteAt(a, 9).values.betaMinus, 2.750646394050493e-7);
+    equal(siteAt(a, 9).values.betaPlus, 0.6735577494469006); equal(siteAt(a, 9).values.p, 0.6666666666666666);
+    equal(classify(a, siteAt(a, 9)), 'insufficient'); assert(siteAt(a, 9).issues[0].includes('Zero inferred branch length'));
+    equal(a.raw.substitutions['0']['8'].root, 'GTC'); equal(a.raw.exportMetadata.method, 'MEME'); equal(a.headers.length, 13);
+  });
+  await test('MEME 4.1 rejects unvalidated rate-class, multiple-hit, and imputation settings', () => {
+    for (const [key, value, match] of [['rates', 3, /rates = 2/], ['multihit', 'Double', /multihit/], ['Imputed States', 1, /Imputed States/]]) {
+      throws(() => modify(j => { j.analysis.settings[key] = value; }, meme41Text), match);
+    }
+  });
   await test('Header order, not column position, determines FEL values', () => {
     const changed = modify(j => { j.MLE.headers.reverse(); j.MLE.content['0'].forEach(r => r.reverse()); });
     equal(siteAt(changed, 11).values.alpha, siteAt(fel, 11).values.alpha); equal(siteAt(changed, 9).values.p, siteAt(fel, 9).values.p);
@@ -46,6 +59,8 @@ export async function runSuite(read, onResult = () => {}) {
   await test('Header order, not column position, determines MEME values', () => {
     const changed = modify(j => { j.MLE.headers.reverse(); j.MLE.content['0'].forEach(r => r.reverse()); }, memeText);
     equal(siteAt(changed, 43).values.betaPlus, siteAt(meme, 43).values.betaPlus);
+    const changed41 = modify(j => { j.MLE.headers.reverse(); j.MLE.content['0'].forEach(r => r.reverse()); }, meme41Text);
+    equal(siteAt(changed41, 9).values.betaMinus, 2.750646394050493e-7);
   });
   await test('Original text, metadata, branch scope and fit diagnostics are preserved', () => {
     equal(fel.originalText, felText); equal(fel.filename, 'CD2.FEL.json'); equal(fel.tested['0'].Pig, 'test'); assert(fel.fits['Nucleotide GTR']);

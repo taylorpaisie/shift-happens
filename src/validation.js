@@ -1,11 +1,11 @@
 // Native adapters deliberately limited to versions covered by pinned upstream fixtures.
-export const SUPPORTED = Object.freeze({ FEL: ['2.00', '2.6'], MEME: ['2.1.1'] });
+export const SUPPORTED = Object.freeze({ FEL: ['2.00', '2.6'], MEME: ['2.1.1', '4.1'] });
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 function requireValue(ok, message) { if (!ok) throw new Error(message); }
 const aliases = new Map([
-  ['alpha', 'alpha'], ['alpha;', 'alpha'], ['beta', 'beta'],
-  ['&beta;<sup>-</sup>', 'betaMinus'], ['&beta;<sup>+</sup>', 'betaPlus'],
-  ['p<sup>-</sup>', 'weightMinus'], ['p<sup>+</sup>', 'weightPlus'],
+  ['alpha', 'alpha'], ['alpha;', 'alpha'], ['&alpha;', 'alpha'], ['beta', 'beta'],
+  ['&beta;<sup>-</sup>', 'betaMinus'], ['&beta;<sup>1</sup>', 'betaMinus'], ['&beta;<sup>+</sup>', 'betaPlus'],
+  ['p<sup>-</sup>', 'weightMinus'], ['p<sup>1</sup>', 'weightMinus'], ['p<sup>+</sup>', 'weightPlus'],
   ['LRT', 'lrt'], ['p-value', 'p'], ['Total branch length', 'branchLength'],
 ]);
 
@@ -13,9 +13,15 @@ export function validateHyPhy(raw, filename, text) {
   requireValue(object(raw) && object(raw.analysis), 'Missing analysis metadata. Only native HyPhy FEL and MEME JSON are supported; normalized project JSON is a different format.');
   const info = raw.analysis.info;
   const method = typeof info === 'string' ? /^(FEL|MEME)\s*\(/.exec(info.trim())?.[1] : undefined;
-  requireValue(method, 'Unsupported analysis. Import native FEL 2.00 / 2.6 or MEME 2.1.1 JSON. Contrast-FEL and other methods are not yet validated.');
+  requireValue(method, 'Unsupported analysis. Import native FEL 2.00 / 2.6 or MEME 2.1.1 / 4.1 JSON. Contrast-FEL and other methods are not yet validated.');
   const version = raw.analysis.version;
   requireValue(SUPPORTED[method].includes(version), `Unsupported ${method} method version ${String(version)}. Verified versions: ${SUPPORTED[method].join(', ')}. Keep the original file; request validation of a fixture for this version.`);
+  if (method === 'MEME' && version === '4.1') {
+    const settings = raw.analysis.settings;
+    requireValue(object(settings) && Number.isInteger(settings.rates) && settings.rates === 2, 'MEME 4.1 imports currently require analysis.settings.rates = 2; outputs with more rate classes need a different evidence model.');
+    requireValue(settings.multihit === 'None', "MEME 4.1 imports currently require analysis.settings.multihit = 'None'; multiple-hit output has not been validated.");
+    requireValue(Number.isInteger(settings['Imputed States']) && settings['Imputed States'] === 0, "MEME 4.1 imports currently require analysis.settings['Imputed States'] = 0; imputed-state output has not been validated.");
+  }
   requireValue(object(raw.input), 'Missing input metadata. Re-export the complete HyPhy output.');
   const length = raw.input['number of sites'];
   requireValue(Number.isInteger(length) && length > 0 && length <= 100000, 'input.number of sites must be an integer from 1 to 100000 (codons).');

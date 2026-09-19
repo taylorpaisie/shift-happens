@@ -28,10 +28,12 @@ Hosted mode explicitly tells users that uploaded data goes to the hosting server
 | Method | `analysis.version` verified | Scope | Fixture |
 | --- | --- | --- | --- |
 | FEL | `2.00`, `2.6` | Pervasive site selection in the reported test branches | Official mammalian CD2 output, 187 codons; representative Datamonkey 2.6 output, 42 codons |
-| MEME | `2.00`, `2.1.1` | Episodic site diversification in the reported test branches | Official lysin and mammalian CD2 outputs |
+| MEME | `2.00`, `2.1.1`, `4.1` | Episodic site diversification in the reported test branches | Official lysin and mammalian CD2 outputs; representative two-rate Datamonkey 4.1 output |
 | Contrast-FEL | **No native import yet** | Synthetic branch-group difference illustration only | No adapter validation completed |
 
 These are **analysis method versions, not HyPhy executable versions**. The fixtures do not report a verified executable version. Newer or different method versions are rejected even if they look similar. Supporting an entire HyPhy release family is not claimed.
+
+MEME 4.1 support is limited to the validated two-rate configuration with multiple hits and imputed states disabled. Other MEME 4.1 configurations are rejected explicitly.
 
 Only single-partition outputs with documented `MLE.headers`, `MLE.content`, `data partitions.0.coverage`, input tree, counts, and tested-branch labels are accepted. Local limits are 25 MiB/file, 50 MiB/workspace, 20 files, and 100,000 alignment codons; hosted limits are smaller. Large-file responsiveness and concurrency are not benchmarked. No native FUBAR, aBSREL, RELAX, GARD, or normalized project-JSON importer is included.
 
