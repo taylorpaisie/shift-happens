@@ -45,7 +45,7 @@ def figure_svg(analyses, threshold, start, end):
     for a in analyses:
         name = re.sub(r"\s", " ", f"{a.method} {a.version} · {a.filename}")
         source_lines.extend(name[i:i+125] for i in range(0, len(name), 125))
-        source_lines.append(f"{a.scope_summary} · Partition 0 · {'Synthetic shared coordinates' if a.synthetic else 'Unverified alignment identity; isolated analysis'}")
+        source_lines.append(f"{a.scope_summary} · Partition 0 · {'Synthetic shared coordinates' if a.synthetic else 'Alignment content unverified; method-native evidence'}")
     height = legend_y + 215 + len(source_lines) * 20
     synthetic = any(a.synthetic for a in analyses)
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',

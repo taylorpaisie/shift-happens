@@ -8,7 +8,7 @@ from shift_happens.config import Settings
 from shift_happens.exports import evidence_csv, figure_svg
 from shift_happens.model import finite_number
 from shift_happens.views import inspector, legend, track_figure
-from shift_happens.workspace import active_analyses, import_files, initial_workspace, options
+from shift_happens.workspace import active_analyses, import_files, initial_workspace, options, source_ids_for_selection
 
 ROOT = Path(__file__).resolve().parent
 
@@ -43,7 +43,7 @@ def create_app(settings=None):
                               html.Div([dcc.Upload(id="upload", children=html.Button("＋ Import HyPhy / Datamonkey JSON", className="primary"), multiple=True, accept=".json,application/json"), html.P(f"FEL 2.00 / 2.6 · MEME 2.00 / 2.1.1 / 4.1 · {settings.max_file_mib} MiB/file"), html.P("Uploads are sent to this hosted server for processing. Use local mode for data that must stay on your computer." if settings.hosted else "Files are processed by your local Python server."), html.Button("Open synthetic example →", id="demo", className="text-button"), html.Details([html.Summary("Importing Datamonkey results"), html.P("On a completed FEL or MEME results page, download the full results JSON and upload it here. CSV tables, job-status JSON, and saved webpages are not complete analysis results."), html.P("MEME 4.1 is validated for exactly two rate classes, with multiple hits and imputed states disabled."), html.P("Only the method versions and configurations listed above are validated. Newer formats need a representative fixture; do not change a file’s version field.")])], className="import-box")], className="intro"),
                 html.Div(id="message", role="status", **{"aria-live": "polite"}),
                 html.Div([
-                    html.Aside([html.H2("Analyses"), html.P("Native files stay independent until shared alignment identity can be verified.", className="hint"), dcc.RadioItems(id="active", options=options(workspace), value="demo", className="analysis-list"), html.Button("Remove selected analysis", id="remove", className="remove-button"), html.P(f"Reloading clears this browser’s workspace. Up to 20 files / {settings.max_workspace_mib} MiB total / {settings.max_codons:,} codons per analysis.", className="hint")], className="panel files"),
+                    html.Aside([html.H2("Analyses"), html.P("Compatible Datamonkey FEL and MEME exports receive a metadata-matched comparison view; individual method views remain available.", className="hint"), dcc.RadioItems(id="active", options=options(workspace, settings), value="demo", className="analysis-list"), html.Button("Remove selected file(s)", id="remove", className="remove-button"), html.P(f"Reloading clears this browser’s workspace. Up to 20 files / {settings.max_workspace_mib} MiB total / {settings.max_codons:,} codons per analysis.", className="hint")], className="panel files"),
                     html.Section([
                         html.Div([html.Div([html.P("ALONG THE ALIGNMENT", className="eyebrow"), html.H2("Selection evidence")]), html.Div([html.Button("Evidence CSV", id="csv"), html.Button("Figure SVG", id="svg"), html.Button("Original JSON", id="original")], className="export-buttons")], className="section-heading"),
                         html.Div(id="context", className="context"),
@@ -79,11 +79,13 @@ def create_app(settings=None):
             selected = "demo"
             notice = "SYNTHETIC illustration opened. Native files are retained."
         elif ctx.triggered_id == "remove":
-            workspace = {"demo": workspace["demo"] and selected != "demo", "files": [f for f in workspace["files"] if f["id"] != selected]}
-            choices = options(workspace)
+            remove_ids = source_ids_for_selection(workspace, selected, settings)
+            workspace = {"demo": workspace["demo"] and selected != "demo", "files": [f for f in workspace["files"] if f["id"] not in remove_ids]}
+            choices = options(workspace, settings)
             selected = choices[0]["value"] if choices else None
-            notice = "Selected analysis removed."
-        return workspace, options(workspace), selected, notice
+            notice = ("Synthetic illustration closed." if "demo" in remove_ids else
+                      f"Removed {len(remove_ids)} selected source file(s).")
+        return workspace, options(workspace, settings), selected, notice
 
     @app.callback(Output("tracks", "figure"), Output("inspection", "children"), Output("context", "children"), Output("range", "children"),
                   Output("start", "value"), Output("codon", "value"), Output("start", "max"), Output("codon", "max"), Output("inspector-title", "children"),
@@ -111,11 +113,12 @@ def create_app(settings=None):
         end = min(length, start + window - 1)
         threshold = threshold if finite_number(threshold) and 0 < threshold <= 1 else .05
         notice = ("SYNTHETIC EXAMPLE · Hand-authored illustration, not biological results. These tracks share synthetic coordinates." if selected == "demo" and analyses else
+                  f"{analyses[0].filename} + {analyses[1].filename} · Metadata-matched comparison: source filenames, sequence/site counts, coverage, taxa, and leaf scope agree. Alignment content is not embedded or verified." if len(analyses) > 1 else
                   f"{analyses[0].filename} · Independent native analysis. Alignment identity is unverified; cross-file linking is disabled." if analyses else
                   "Import an analysis or open the synthetic example to begin.")
         return (track_figure(analyses, threshold, start, end, codon), inspector(analyses, codon, threshold), notice,
                 f"Codons {start}–{end} of {length}" if analyses else "No analysis", start, codon, length, length,
-                f"Codon {codon}" if analyses else "Choose an analysis", not analyses or analyses[0].synthetic, not analyses, not analyses, not analyses or start == 1, not analyses or end == length)
+                f"Codon {codon}" if analyses else "Choose an analysis", not analyses or analyses[0].synthetic or len(analyses) != 1, not analyses, not analyses, not analyses or start == 1, not analyses or end == length)
 
     @app.callback(Output("download", "data"), Input("csv", "n_clicks"), Input("svg", "n_clicks"), Input("original", "n_clicks"),
                   State("workspace", "data"), State("active", "value"), State("threshold", "value"), State("start", "value"), State("window", "value"), prevent_initial_call=True)

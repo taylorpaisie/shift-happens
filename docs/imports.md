@@ -54,6 +54,6 @@ For both methods, codon 2 has zero inferred rates and branch length: the viewer 
 
 ## Linking and further methods
 
-The native JSON provides no verified alignment-content hash or embedded original alignment. Native analyses stay isolated. Raw-file equality is also not presented as proof of alignment identity. The linked synthetic dataset's identity and coordinate system are established internally by construction; upload data cannot opt into that identity.
+The native JSON provides no verified alignment-content hash or embedded original alignment. The Dash app offers a comparison—not verified linking—when exactly one FEL and one MEME result agree on complete Datamonkey source names, sequence/site counts, full coverage coordinates, named leaf taxa, and per-leaf test/background scope. The option is explicitly labeled `metadata-matched`; method values remain separate and method-specific trees may differ. Incomplete, ambiguous, or differing metadata leaves files isolated. Raw-file equality is not presented as proof of alignment identity. The linked synthetic dataset's identity and coordinate system remain established internally by construction.
 
 [An upstream Contrast-FEL example exists](https://github.com/veg/hyphy-vision/blob/2225f5d8b8b919d3eb6d56cdc77d9ca660dc351d/data/json_files/contrast-fel/multi.json). It was not used to invent a parser. Its analysis version, biological provenance, branch-group mapping and native correction semantics require a separate verified fixture pass. Native Contrast-FEL remains deferred, not silently approximated with FEL.

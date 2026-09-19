@@ -201,6 +201,21 @@ def main():
             assert json.loads(metadata.text)["sources"][0]["publication_metadata"] == "22807683"
             evaluate("document.getElementById('remove').click()")
             until("document.getElementById('context').textContent.includes('SYNTHETIC')")
+            # Compatible Datamonkey exports receive an explicit metadata-matched
+            # comparison while their individual method views remain available.
+            files([ROOT / "fixtures/FEL-2.6.Datamonkey.json", ROOT / "fixtures/MEME-4.1.Datamonkey.json"])
+            until("document.getElementById('context').textContent.includes('Metadata-matched comparison') && document.querySelector('#tracks .js-plotly-plot').data.length === 2")
+            assert evaluate("document.querySelectorAll('.evidence-card').length === 2")
+            assert evaluate("document.getElementById('active').textContent.includes('FEL + MEME · medium.nex · metadata-matched')")
+            assert evaluate("document.getElementById('message').textContent.includes('alignment content remains unverified')")
+            assert evaluate("document.getElementById('original').disabled")
+            paired_csv = artifacts / "shift-happens-evidence.csv"
+            if paired_csv.exists():
+                paired_csv.unlink()
+            evaluate("document.getElementById('csv').click()")
+            assert len(download("shift-happens-evidence.csv").read_text(encoding="utf8").splitlines()) == 85
+            evaluate("document.getElementById('remove').click()")
+            until("document.getElementById('context').textContent.includes('SYNTHETIC') && !document.getElementById('active').textContent.includes('medium.nex')")
             # Every browser request, including Plotly and callbacks, must stay local.
             assert all(url.startswith((base, "data:", "blob:")) for url in requests), requests
             call("Emulation.setDeviceMetricsOverride", dict(width=390, height=844, deviceScaleFactor=1, mobile=True))
@@ -212,7 +227,7 @@ def main():
             call("Page.reload")
             until("document.querySelector('#tracks .js-plotly-plot')?.data?.length === 3")
             assert evaluate("!document.getElementById('active').textContent.includes('CD2')")
-            print("PASS: Dash renders; real Plotly clicks synchronize evidence; multi-file uploads including Datamonkey-contract JSON and official MEME 2.00, native isolation, pagination, invalid-file recovery, removal, CSV/SVG/original downloads, publication metadata, memory-only workspace and mobile layout work. All observed browser requests stayed local.")
+            print("PASS: Dash renders; real Plotly clicks synchronize evidence; multi-file uploads, native isolation and metadata-matched FEL/MEME comparison, pagination, recovery, removal, exports, publication metadata, memory-only workspace and mobile layout work. All observed browser requests stayed local.")
             print("Artifacts:", artifacts)
         finally:
             if ws:

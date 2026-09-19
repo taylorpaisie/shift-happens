@@ -23,7 +23,7 @@ The verified server contract is pinned to `veg/datamonkey-js` commit **ee78cd357
 
 Consequently, a separate statistical parser is unnecessary for this download contract. The same header-driven schema validator handles full results from either source. The UI calls the format **Native HyPhy / Datamonkey results JSON**; this describes compatibility, not proof that a particular file came from Datamonkey. A filename or `PMID` cannot establish origin or alignment identity.
 
-Original text and all original fields are retained. Publication metadata appears in the inspector, evidence CSV and SVG metadata; the Original JSON download preserves the original decoded text. Native files stay isolated because downloaded result JSON alone does not verify shared alignment content. Single-partition, missing-data, correction, and hosted/local size-limit rules are unchanged.
+Original text and all original fields are retained. Publication metadata appears in the inspector, evidence CSV and SVG metadata; the Original JSON download preserves the original decoded text. A complete, exact metadata match can create a two-track FEL + MEME comparison, but it is not labeled as verified alignment identity. Single-partition, missing-data, correction, and hosted/local size-limit rules are unchanged.
 
 CSV tables are not sufficient substitutes: the importer needs version, tested-branch scope, native headers, and coordinate mapping to interpret evidence safely. Archives and live result URLs are not fetched or unpacked by this increment.
 

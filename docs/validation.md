@@ -1,5 +1,11 @@
 # Validation record
 
+## Metadata-matched FEL + MEME comparison
+
+- **91 Python tests passed**, including automatic pairing of the supplied FEL 2.6 and MEME 4.1 exports, automatic comparison selection, two-track activation, source-file removal, and false-positive rejection when export filename, coverage, or required metadata differs.
+- **Dash browser smoke passed in Chrome** with the representative files uploaded through the real file control. The app selected a two-track `FEL + MEME · medium.nex · metadata-matched` view, rendered two inspector cards, disabled the ambiguous single-original download, exported all 84 method/site rows to CSV, retained individual views, and removed both selected source files together.
+- The comparison contract requires exact agreement on Datamonkey export/input filenames, sequence/site counts, full coverage coordinates, unique named leaf taxa, and per-leaf tested scope. It does not claim alignment-content identity, combine method statistics, or require method-specific tree strings to be identical.
+
 ## MEME 4.1 import increment
 
 - **87 Python tests passed**, including the supplied representative MEME 4.1 Datamonkey result, exact two-rate mixture mapping, header-order independence, fixture integrity, native-field preservation, and configuration rejection.

@@ -11,9 +11,9 @@ from app import create_app
 from shift_happens.demo import create_demo
 from shift_happens.exports import evidence_csv, figure_svg
 from shift_happens.imports import decode_upload, parse_hyphy
-from shift_happens.model import can_link, classify
+from shift_happens.model import can_compare_native, can_link, classify, native_comparison_key
 from shift_happens.views import track_figure, inspector
-from shift_happens.workspace import active_analyses, import_files, initial_workspace, options
+from shift_happens.workspace import active_analyses, comparison_pairs, import_files, initial_workspace, options, source_ids_for_selection
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -208,6 +208,41 @@ def test_identity_and_demo_semantics():
     assert not can_link(native, parse_hyphy(text("CD2.MEME.json")))
     b.length = 71
     assert not can_link(a, b)
+
+
+def test_metadata_matched_fel_meme_comparison_is_available_and_selected():
+    workspace, selected, notice = import_files(
+        initial_workspace(),
+        [upload(text("FEL-2.6.Datamonkey.json")), upload(text("MEME-4.1.Datamonkey.json"))],
+        ["FEL_analysis.json", "MEME_analysis.json"],
+    )
+    assert selected.startswith("compare:")
+    assert "metadata-matched FEL + MEME comparison" in notice
+    pair, = comparison_pairs(workspace)
+    assert pair["value"] == selected
+    assert source_ids_for_selection(workspace, selected) == {f["id"] for f in workspace["files"]}
+    analyses = active_analyses(workspace, selected)
+    assert [a.method for a in analyses] == ["FEL", "MEME"]
+    assert can_compare_native(*analyses) and not can_link(*analyses)
+    assert native_comparison_key(analyses[0]) == native_comparison_key(analyses[1])
+    labels = [choice["label"] for choice in options(workspace)]
+    assert labels[1] == "FEL + MEME · medium.nex · metadata-matched"
+    assert len(labels) == 4  # synthetic, comparison, and both individual method views
+
+
+@pytest.mark.parametrize("mutation", [
+    lambda r: r["exportMetadata"].__setitem__("filename", "different.nex"),
+    lambda r: r["data partitions"]["0"]["coverage"][0].__setitem__(0, 1),
+    lambda r: r.pop("exportMetadata"),
+])
+def test_native_comparison_requires_complete_exact_coordinate_metadata(mutation):
+    fel = parse_hyphy(text("FEL-2.6.Datamonkey.json"))
+    raw = json.loads(text("MEME-4.1.Datamonkey.json"))
+    mutation(raw)
+    if len(set(raw["data partitions"]["0"]["coverage"][0])) != len(raw["data partitions"]["0"]["coverage"][0]):
+        raw["data partitions"]["0"]["coverage"][0][1] = 0
+    meme = parse_hyphy(json.dumps(raw))
+    assert not can_compare_native(fel, meme)
 
 
 def test_exports_are_complete_and_safe():

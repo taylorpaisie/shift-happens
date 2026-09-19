@@ -86,3 +86,43 @@ def classify(analysis, site, threshold=0.05):
 def can_link(a, b):
     return (a.synthetic and b.synthetic and a.identity == b.identity == "builtin-demo-v1"
             and a.length == b.length)
+
+
+def native_comparison_key(analysis):
+    """Conservative coordinate-metadata match; never claims alignment identity."""
+    if analysis.synthetic:
+        return None
+    raw = analysis.raw
+    export = raw.get("exportMetadata")
+    source = raw.get("input")
+    partitions = raw.get("data partitions")
+    branches = raw.get("branch attributes")
+    tested = raw.get("tested")
+    if not all(isinstance(value, dict) for value in (export, source, partitions, branches, tested)):
+        return None
+    export_name, input_name = export.get("filename"), source.get("file name")
+    partition = partitions.get("0")
+    branch_data, tested_data = branches.get("0"), tested.get("0")
+    if not (isinstance(export_name, str) and export_name and isinstance(input_name, str) and input_name
+            and isinstance(partition, dict) and isinstance(branch_data, dict) and isinstance(tested_data, dict)):
+        return None
+    coverage = partition.get("coverage")
+    if not (isinstance(coverage, list) and len(coverage) == 1 and isinstance(coverage[0], list)):
+        return None
+    leaf_scope = []
+    for branch, attributes in branch_data.items():
+        if isinstance(attributes, dict) and isinstance(attributes.get("original name"), str):
+            label = tested_data.get(branch)
+            if label not in ("test", "background"):
+                return None
+            leaf_scope.append((attributes["original name"], label))
+    sequences = source.get("number of sequences")
+    if type(sequences) is not int or len(leaf_scope) != sequences or len({name for name, _ in leaf_scope}) != sequences:
+        return None
+    return (export_name, input_name, sequences, source.get("number of sites"), tuple(coverage[0]), tuple(sorted(leaf_scope)))
+
+
+def can_compare_native(a, b):
+    key = native_comparison_key(a)
+    return (key is not None and key == native_comparison_key(b) and a.method != b.method
+            and {a.method, b.method} == {"FEL", "MEME"} and a.length == b.length)
